@@ -7,6 +7,8 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
 
 import Home from './src/common/Home';
+import AddMovie from './src/features/userMovie/pages/AddMovie';
+import AllMovies from './src/features/userMovie/pages/AllMovies';
 import Login from './src/common/Login';
 import ReviewList from './src/features/movie_review/pages/ReviewList';
 import Sidebar from './src/common/Sidebar';
@@ -28,6 +30,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -122,6 +125,10 @@ export default function App() {
             onPress={() => console.log('add button clicked')}
             component={Review}
           />
+
+          <Tab.Screen name="AddMovie" component={AddMovie} />
+          <Tab.Screen name="AllMovie" component={AllMovies} />
+
         </Tab.Navigator>
 
       </Drawer>
