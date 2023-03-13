@@ -1,15 +1,20 @@
-import React from 'react';
+import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Card, Container, UserImage, UserInfo, UserName, UserInfoText, MainRow, PostTime, PostText, PostImg, InteractionWrapper, Interaction, Interactiontext, ImageBox, ImageBoxContent, ImageBoxContent1, ImageBoxContent2, Image1, Image2, PostTitle } from "../styles/all";
 import Comments from './Comments';
 
-const Post = ({ username, imageUrl, caption, likes, onPressLike, onPressComment, onPressShare }) => {
+
+const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
     const comments = [
         { username: 'user1', text: 'comment 1' },
         { username: 'user2', text: 'comment 2' },
     ];
-    const [isCommentModalVisible, setIsCommentModalVisible] = React.useState(false);
-    const [newComment, setNewComment] = React.useState("");
+
+    const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
+    const [newComment, setNewComment] = useState("");
+    const [type, settype] = useState(2);
+
 
     const handleAddComment = () => {
         // TODO: handle adding new comment to the comments list
@@ -19,29 +24,108 @@ const Post = ({ username, imageUrl, caption, likes, onPressLike, onPressComment,
     }
 
     return (
-        <View style={styles.post}>
-            <View style={styles.postHeader}>
-                <Image style={styles.avatar} source={{ uri: 'https://picsum.photos/id/10/50/50' }} />
-                <Text style={styles.username}>{username}</Text>
-            </View>
-            <Image style={styles.postImage} source={{ uri: imageUrl }} resizeMode="contain" />
+
+        <Card>
+            <MainRow>
+                <UserInfo>
+                    <UserImage source={{ uri: "https://picsum.photos/id/10/50/50" }} />
+                    <UserInfoText>
+                        <UserName>Kavindu Chamith</UserName>
+                        <PostTime>
+                            4 hours ago
+                        </PostTime>
+                    </UserInfoText>
+
+                </UserInfo>
+                <View>
+                    <TouchableOpacity style={styles.viewBtn} onPress={() => { }}>
+                        <MaterialIcons name="visibility" size={24} color="white" />
+                        <Text style={styles.viewBtntext}>View</Text>
+                    </TouchableOpacity>
+                </View>
+            </MainRow>
+
+            <PostText>
+                <Text style={{ color: 'white' }}>{post.title}</Text>
+
+            </PostText>
+
+            {
+                type === 3 ? <>
+
+                    <ImageBox>
+                        <ImageBoxContent2>
+                            <Image2 source={{ uri: post.img1 }} />
+                            <Image2 source={{ uri: post.img2 }} />
+                        </ImageBoxContent2>
+
+                        <ImageBoxContent2>
+
+                            <Image2 source={{ uri: post.img3 }} />
+                            <Image2 source={{ uri: post.img4 }} />
+                        </ImageBoxContent2>
+
+                    </ImageBox>
+                </> : <></>
+            }
+            {
+                type == 2 ? <>
+
+                    <ImageBox>
+                        <ImageBoxContent1>
+                            <Image1 source={{ uri: post.img1 }} />
+                        </ImageBoxContent1>
+
+                        <ImageBoxContent2>
+                            <Image2 source={{ uri: post.img2 }} />
+                            <Image2 source={{ uri: post.img3 }} />
+                        </ImageBoxContent2>
+
+                    </ImageBox>
+                </> : <>
+
+                </>
+            }
+
+            {
+                type === 1 ? <>
+                    <ImageBox>
+                        <PostImg source={{ uri: post.img1 }} />
+                    </ImageBox>
+                </> : <></>
+            }
             <View style={styles.postFooter}>
                 <TouchableOpacity onPress={onPressLike} style={styles.iconContainer}>
-                    <MaterialIcons name="thumb-up" size={24} color="#666" />
-                    <Text style={styles.iconText}>{likes} likes</Text>
+                    <MaterialIcons name="thumb-up" size={24} color="#fb5b5a" />
+                    <Text style={styles.iconText}>20 likes</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setIsCommentModalVisible(true)} style={styles.iconContainer}>
-                    <MaterialIcons name="chat-bubble-outline" size={24} color="#666" />
+                    <MaterialIcons name="chat-bubble-outline" size={24} color="#fb5b5a" />
                     <Text style={styles.iconText}>Comment</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressShare} style={styles.iconContainer}>
-                    <MaterialIcons name="share" size={24} color="#666" />
+                    <MaterialIcons name="share" size={24} color="#fb5b5a" />
                     <Text style={styles.iconText}>Share</Text>
                 </TouchableOpacity>
             </View>
-            <Text style={styles.caption}>{caption}</Text>
 
-            {/* Comment Modal */}
+            {/* <InteractionWrapper>
+                    {item.like ? <>
+                        <Interaction active={exist} onPress={() => addLike(item._id)}>
+                            <Ionicons name={exist ? "heart" : "heart-outline"} color={exist ? "#0099FF" : "#333"} size={25} />
+                            <Interactiontext active={exist}>{item?.likes?.length !== 0 ? <>{item?.likes?.length}</> : <></>} Like</Interactiontext>
+                        </Interaction>
+                    </> : <></>}
+
+                    {item.comment ? <>
+                        <Interaction onPress={() => visible(item)}>
+                            <Ionicons name="md-chatbubble-outline" size={25} />
+                            <Interactiontext>{item?.comments?.length !== 0 ? <>{item?.comments?.length}</> : <></>} Comment</Interactiontext>
+                        </Interaction>
+                    </> : <></>}
+
+
+                </InteractionWrapper> */}
             <Modal visible={isCommentModalVisible} style={styles.modal} transparent={true}>
                 <View style={styles.commentModal}>
                     <View style={styles.commentModalContent}>
@@ -70,7 +154,10 @@ const Post = ({ username, imageUrl, caption, likes, onPressLike, onPressComment,
                     </View>
                 </View>
             </Modal>
-        </View>
+        </Card >
+
+
+
     );
 };
 
@@ -109,6 +196,7 @@ const styles = StyleSheet.create({
     iconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center'
     },
     modal: {
 
@@ -117,7 +205,7 @@ const styles = StyleSheet.create({
     },
     iconText: {
         marginLeft: 5,
-        color: '#666',
+        color: 'white',
     },
     caption: {
         padding: 10,
@@ -132,7 +220,7 @@ const styles = StyleSheet.create({
     },
     commentModalContent: {
         padding: 20,
-        width: '80%',
+        width: '90%',
         height: '90%',
         backgroundColor: '#fff',
         borderTopLeftRadius: 20,
@@ -185,7 +273,21 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginLeft: 5,
     },
-
+    viewBtn: {
+        backgroundColor: '#fb5b5a',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 5,
+        paddingHorizontal: 5,
+        borderRadius: 4,
+        marginRight: 8
+    },
+    viewBtntext: {
+        color: 'white',
+        marginLeft: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 
 });
 

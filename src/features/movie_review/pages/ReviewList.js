@@ -1,39 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
+import { GET } from '../../../common/httphelper';
 import Post from '../components/Post';
-
-const posts = [
-    {
-        id: 1,
-        username: 'johndoe',
-        imageUrl: 'https://picsum.photos/id/1/200/300',
-        caption: 'This is a post!',
-        likes: 12,
-    },
-    {
-        id: 2,
-        username: 'janedoe',
-        imageUrl: 'https://picsum.photos/id/2/200/300',
-        caption: 'Another post!',
-        likes: 20,
-    },
-    {
-        id: 3,
-        username: 'bobsmith',
-        imageUrl: 'https://picsum.photos/id/3/200/300',
-        caption: 'A third post!',
-        likes: 5,
-    },
-];
+import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 
 
 const ReviewList = () => {
+    const db = getFirestore()
+    const store = getStorage()
+    const [posts, setPosts] = useState([])
+    useEffect(() => {
+        loadData()
+    }, []);
+
+    const loadData = async () => {
+
+        const reviewsRef = collection(db, 'review');
+        const querySnapshot = await getDocs(reviewsRef);
+        const reviews = [];
+        querySnapshot.forEach((doc) => {
+            const review = doc.data();
+            review.id = doc.id;
+            reviews.push(review);
+        });
+        setPosts(reviews)
+
+    }
     return (
         <View style={styles.container}>
             <FlatList
                 data={posts}
                 keyExtractor={post => post.id.toString()}
-                renderItem={({ item }) => <Post username={item.username} imageUrl={item.imageUrl} caption={item.caption} likes={item.likes} />}
+                renderItem={({ item }) => <Post post={item} />}
             />
         </View>
     );
@@ -42,12 +41,11 @@ const ReviewList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
+        backgroundColor: '#222',
         justifyContent: 'center',
         height: '100%',
         width: '100%',
-        marginTop: 40
+
     },
 
 });
