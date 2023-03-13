@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Card from './Card';
+import Card from '../components/userMovieCard';
 
 const AllMovies = () => {
     const [movies, setMovies] = useState([
