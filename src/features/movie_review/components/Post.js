@@ -1,26 +1,122 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Card, Container, UserImage, UserInfo, UserName, UserInfoText, MainRow, PostTime, PostText, PostImg, InteractionWrapper, Interaction, Interactiontext, ImageBox, ImageBoxContent, ImageBoxContent1, ImageBoxContent2, Image1, Image2, PostTitle } from "../styles/all";
+import { MaterialIcons, FontAwesome5, FontAwesome } from '@expo/vector-icons';
+import { Card, Container, UserImage, UserInfo, ImageBox2, UserName, UserInfoText, MainRow, PostTime, PostText, PostImg, InteractionWrapper, Interaction, Interactiontext, ImageBox, ImageBoxContent, ImageBoxContent1, ImageBoxContent2, Image1, Image2, PostTitle } from "../styles/all";
 import Comments from './Comments';
-
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, serverTimestamp, runTransaction, query, orderBy, onSnapshot } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { useNavigation } from '@react-navigation/native';
 
 const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
-    const comments = [
-        { username: 'user1', text: 'comment 1' },
-        { username: 'user2', text: 'comment 2' },
-    ];
+    const navigation = useNavigation();
+    const [comments, setcomments] = useState([])
+    const [comment, setComment] = useState('');
+    const setingcomments = (id) => {
+        loadComments(id)
+        setIsCommentModalVisible(true)
+    }
+    const gotoviewpage = () => {
+        navigation.navigate('my', { pid: post.id })
+    }
+
+
+    const loadComments = (id) => {
+        const db = getFirestore();
+        const commentsRef = collection(db, `review/${id}/comments`);
+        const commentsQuery = query(commentsRef, orderBy("timestamp", "desc"));
+
+        const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
+            const newComments = [];
+            snapshot.forEach((doc) => {
+                const commentData = doc.data();
+                commentData.id = doc.id;
+                newComments.push(commentData);
+            });
+            setcomments(newComments);
+        });
+
+        return () => unsubscribe();
+    }
+
+    const addComment = async () => {
+        const db = getFirestore();
+        try {
+            const newCommentRef = await addDoc(collection(db, `review/${post.id}/comments`), {
+                text: newComment,
+                uid: 'xX4OtaV4j5fLIE1k2cL7l4igkeN2',//getAuth().currentUser.uid,
+                timestamp: serverTimestamp(),
+            });
+            console.log("Comment added with ID: ", newCommentRef.id);
+            setNewComment('');
+        } catch (error) {
+            console.error("Error adding comment: ", error);
+        }
+    };
 
     const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
     const [newComment, setNewComment] = useState("");
     const [type, settype] = useState(2);
+    const [liked, setliked] = useState(false);
+    const [likesCount, setLikesCount] = useState(post.likes || 0);
+    useEffect(() => {
+        checkliked()
+    }, []);
 
+    const checkliked = () => {
+        const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'//firebase.auth().currentUser.uid;
+        const postRef = doc(getFirestore(), 'review', post.id);
+        const likesRef = doc(collection(postRef, 'likes'), userId);
+        getDoc(likesRef).then(doc => {
+            if (doc.exists()) {
+                setliked(true);
+            }
+        });
+    }
 
     const handleAddComment = () => {
         // TODO: handle adding new comment to the comments list
         console.log("New Comment:", newComment);
         setNewComment("");
         setIsCommentModalVisible(false);
+    }
+    const handleLike = () => {
+        const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'//firebase.auth().currentUser.uid;
+        const postRef = doc(getFirestore(), 'review', post.id);
+        if (!liked) {
+
+            setliked(true);
+            setLikesCount(likesCount + 1);
+            runTransaction(getFirestore(), async transaction => {
+                const postDoc = await transaction.get(postRef);
+                const newLikesCount = likesCount + 1;
+                transaction.update(postRef, { likes: newLikesCount });
+                const likesRef = collection(postRef, 'likes');
+                transaction.set(doc(likesRef, userId), { createdAt: serverTimestamp() });
+                return newLikesCount;
+            }).then(newLikesCount => {
+
+            }).catch(error => {
+                console.error(error);
+            });
+        } else {
+            setliked(false);
+            setLikesCount(likesCount - 1);
+            runTransaction(getFirestore(), async transaction => {
+                const postDoc = await transaction.get(postRef);
+                const newLikesCount = likesCount - 1;
+                transaction.update(postRef, { likes: newLikesCount });
+                const likesRef = collection(postRef, 'likes');
+                transaction.delete(doc(likesRef, userId), { createdAt: serverTimestamp() });
+                return newLikesCount;
+            }).then(newLikesCount => {
+
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    };
+    const chnagelike = () => {
+        setliked(!liked)
     }
 
     return (
@@ -38,7 +134,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
 
                 </UserInfo>
                 <View>
-                    <TouchableOpacity style={styles.viewBtn} onPress={() => { }}>
+                    <TouchableOpacity style={styles.viewBtn} onPress={() => { gotoviewpage() }}>
                         <MaterialIcons name="visibility" size={24} color="white" />
                         <Text style={styles.viewBtntext}>View</Text>
                     </TouchableOpacity>
@@ -51,7 +147,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
             </PostText>
 
             {
-                type === 3 ? <>
+                post.type === 3 ? <>
 
                     <ImageBox>
                         <ImageBoxContent2>
@@ -69,7 +165,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
                 </> : <></>
             }
             {
-                type == 2 ? <>
+                post.type == 2 ? <>
 
                     <ImageBox>
                         <ImageBoxContent1>
@@ -88,21 +184,27 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
             }
 
             {
-                type === 1 ? <>
+                post.type === 1 ? <>
                     <ImageBox>
                         <PostImg source={{ uri: post.img1 }} />
                     </ImageBox>
                 </> : <></>
             }
             <View style={styles.postFooter}>
-                <TouchableOpacity onPress={onPressLike} style={styles.iconContainer}>
-                    <MaterialIcons name="thumb-up" size={24} color="#fb5b5a" />
-                    <Text style={styles.iconText}>20 likes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsCommentModalVisible(true)} style={styles.iconContainer}>
-                    <MaterialIcons name="chat-bubble-outline" size={24} color="#fb5b5a" />
-                    <Text style={styles.iconText}>Comment</Text>
-                </TouchableOpacity>
+                {post.like ? <>
+                    <TouchableOpacity onPress={handleLike} style={styles.iconContainer}>
+                        {liked ? <FontAwesome name="thumbs-up" size={24} color="#fb5b5a" /> : <FontAwesome5 name="thumbs-up" size={24} color="#fb5b5a" />}
+
+
+                        <Text style={styles.iconText}>{likesCount} likes</Text>
+                    </TouchableOpacity>
+                </> : <></>}
+                {post.comment ? <>
+
+                    <TouchableOpacity onPress={() => setingcomments(post.id)} style={styles.iconContainer}>
+                        <MaterialIcons name="chat-bubble-outline" size={24} color="#fb5b5a" />
+                        <Text style={styles.iconText}>Comment</Text>
+                    </TouchableOpacity></> : <></>}
                 <TouchableOpacity onPress={onPressShare} style={styles.iconContainer}>
                     <MaterialIcons name="share" size={24} color="#fb5b5a" />
                     <Text style={styles.iconText}>Share</Text>
@@ -141,7 +243,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
                                 value={newComment}
                                 onChangeText={setNewComment}
                             />
-                            <TouchableOpacity onPress={handleAddComment} style={styles.postButton}>
+                            <TouchableOpacity onPress={() => addComment()} style={styles.postButton}>
                                 <Text style={styles.postButtonText}>Post</Text>
                             </TouchableOpacity>
                         </View>
@@ -199,7 +301,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     modal: {
-
+        backgroundColor: '#222',
         width: '100%',
         height: '100%'
     },
@@ -222,7 +324,7 @@ const styles = StyleSheet.create({
         padding: 20,
         width: '90%',
         height: '90%',
-        backgroundColor: '#fff',
+        backgroundColor: '#222',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
@@ -244,7 +346,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     postButton: {
-        backgroundColor: '#2980b9',
+        backgroundColor: '#fb5b5a',
         padding: 10,
         borderRadius: 5,
         marginTop: 10,
@@ -264,10 +366,12 @@ const styles = StyleSheet.create({
     comment: {
         marginBottom: 5,
         fontSize: 14,
+        color: '#fff'
     },
     commentUsername: {
         fontWeight: 'bold',
         marginRight: 5,
+        color: '#fff'
     },
     commentText: {
         fontSize: 16,

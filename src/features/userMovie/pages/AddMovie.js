@@ -2,14 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { Pressable, Modal, TouchableOpacity, View, Button, Alert, Switch, Text, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
 import { Container, ImageContainer, SelectContainer, Input, InputContainer, InputTextArea, InputView, RadioContainer, RadioHolder, SelectImage, TitleText, SwichGroup, OneSwitch } from '../styles/add';
-import { EventImage } from "../styles/all";
-import { Picker } from '@react-native-picker/picker';
-import * as ImagePicker from 'expo-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DatePicker from '@react-native-community/datetimepicker';
+
 import NavigationBottomBar from '../../../components/NavigationBottomBar'
-import SideBar from '../../../components/SideBar'
+
 
 
 function AddEvent() {

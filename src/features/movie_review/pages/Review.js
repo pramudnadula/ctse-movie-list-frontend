@@ -1,57 +1,127 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import WebView from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 import YouTube from 'react-native-youtube';
-
-
+import { useRoute } from '@react-navigation/native';
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, serverTimestamp, runTransaction, query, orderBy, onSnapshot } from "firebase/firestore";
+import Loading from '../components/Loading';
+import RatingInput from '../components/Rating';
 export default function Review() {
+    const route = useRoute();
+    const { pid } = route.params;
+    const [post, setpost] = useState({})
+    const [loading, setloading] = useState(false)
+    const [commentslemght, setcommentslemght] = useState(0)
+    useEffect(() => {
+
+        loadDocumentById()
+    }, [pid])
+
+    const loadDocumentById = async () => {
+        setloading(true)
+        try {
+            const db = getFirestore();
+            const commentsRef = collection(db, `review/${pid}/comments`);
+            const querySnapshot = await getDocs(commentsRef);
+            const documentCount = querySnapshot.size;
+            setcommentslemght(documentCount)
+            const docRef = doc(db, 'review', pid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const posts = docSnap.data()
+                posts.id = docSnap.id
+                setpost(posts)
+                setloading(false)
+            } else {
+                console.log("Document does not exist!");
+                return null;
+            }
+        } catch (error) {
+            console.log("Error loading document:", error);
+            return null;
+        }
+    }
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.container}>
-                <View style={styles.header}>
+            <View style={loading ? styles.container2 : styles.container}>
+                {loading ? <Loading /> : <>
+                    <View style={styles.header}>
 
-                    <Text style={styles.title}>Avengers</Text>
+                        <Text style={styles.title}>{post.mname}</Text>
 
-                </View>
-                <Text style={styles.head}>The Last Game</Text>
-                <View style={styles.imagesContainer}>
-                    <Image
-                        source={{ uri: 'https://c.ndtvimg.com/2019-04/2rpnoa2g_avengers-review-facebook_625x300_26_April_19.jpg?im=Resize=(1230,900)' }}
-                        style={styles.image}
-                    />
-                    <Image
-                        source={{ uri: 'https://c.ndtvimg.com/2019-04/2rpnoa2g_avengers-review-facebook_625x300_26_April_19.jpg?im=Resize=(1230,900)' }}
-                        style={styles.image}
-                    />
-                    <Image
-                        source={{ uri: 'https://c.ndtvimg.com/2019-04/2rpnoa2g_avengers-review-facebook_625x300_26_April_19.jpg?im=Resize=(1230,900)' }}
-                        style={styles.image}
-                    />
-
-
-                    <View style={styles.containers}>
-                        <View style={styles.iconContainer}>
-                            <Ionicons name="chatbox-outline" size={24} color="#fb5b5a" />
-                            <Text style={{ color: '#fff' }}>Comments</Text>
-                            <Text style={styles.iconText}>{20}</Text>
-                        </View>
-                        <View style={styles.iconContainer}>
-                            <Ionicons name="heart-outline" size={24} color="#fb5b5a" />
-                            <Text style={{ color: '#fff' }}>Likes</Text>
-                            <Text style={styles.iconText}>{23}</Text>
-                        </View>
                     </View>
-                </View>
-                <View style={styles.descriptionContainer}>
-                    <Text style={styles.descriptionText}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed
-                        lobortis nibh. Mauris pulvinar nisi vel odio bibendum eleifend.
-                        Pellentesque auctor ultricies risus ac malesuada. Nulla hendrerit
-                        lectus vel nisi feugiat, ac malesuada tellus tincidunt. Praesent
-                        non magna in nibh venenatis bibendum ac sit amet libero.
-                    </Text>
-                </View>
+                    <Text style={styles.head}>{post.title}</Text>
+                    <View style={styles.imagesContainer}>
+                        {post.type === 1 ? <Image
+                            source={{ uri: post.img1 }}
+                            style={styles.image}
+                        /> : <>
+
+                            {post.type === 2 ? <>
+                                <Image
+                                    source={{ uri: post.img1 }}
+                                    style={styles.image}
+                                />
+                                <Image
+                                    source={{ uri: post.img2 }}
+                                    style={styles.image}
+                                />
+                                <Image
+                                    source={{ uri: post.img3 }}
+                                    style={styles.image}
+                                />
+                            </> : <>
+
+                                {
+                                    post.type === 3 ? <>
+
+                                        <Image
+                                            source={{ uri: post.img1 }}
+                                            style={styles.image}
+                                        />
+                                        <Image
+                                            source={{ uri: post.img2 }}
+                                            style={styles.image}
+                                        />
+                                        <Image
+                                            source={{ uri: post.img3 }}
+                                            style={styles.image}
+                                        />
+                                        <Image
+                                            source={{ uri: post.img4 }}
+                                            style={styles.image}
+                                        />
+                                    </> : <></>
+                                }
+
+                            </>}
+                        </>}
+
+
+
+
+                        <View style={styles.containers}>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="chatbox-outline" size={24} color="#fb5b5a" />
+                                <Text style={{ color: '#fff' }}>Comments</Text>
+                                <Text style={styles.iconText}>{commentslemght}</Text>
+                            </View>
+                            <View style={styles.iconContainer}>
+                                <Ionicons name="heart-outline" size={24} color="#fb5b5a" />
+                                <Text style={{ color: '#fff' }}>Likes</Text>
+                                <Text style={styles.iconText}>{post.likes}</Text>
+                            </View>
+                        </View>
+                        <RatingInput view={true} def={post.rate} />
+                    </View>
+                    <View style={styles.descriptionContainer}>
+                        <Text style={styles.descriptionText}>
+                            {post.Description}
+                        </Text>
+                    </View>
+                </>}
             </View>
         </ScrollView>
     );
@@ -63,6 +133,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#222',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    container2: {
+        backgroundColor: '#222',
+        height: 700
     },
     header: {
         flexDirection: 'row',

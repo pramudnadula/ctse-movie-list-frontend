@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-export default function RatingInput({ selectedone }) {
-    const [rating, setRating] = useState(0);
+export default function RatingInput({ selectedone, view, def }) {
+
+    const [rating, setRating] = useState(def !== '' ? def : 0);
 
     const handlePress = (value) => {
         setRating(value);
@@ -11,7 +12,7 @@ export default function RatingInput({ selectedone }) {
 
     return (
         <View style={[styles.container, styles.darkBackground]}>
-            <Text style={[styles.title, styles.lightText]}>Rate this movie</Text>
+            <Text style={[styles.title, styles.lightText]}>{view ? 'Rating for Movie' : 'Rate this movie'}</Text>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={[styles.button, rating >= 1 && styles.activeButton]}

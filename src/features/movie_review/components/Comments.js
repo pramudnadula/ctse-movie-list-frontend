@@ -6,7 +6,7 @@ const Comments = ({ avatarUrl, com }) => {
         <View style={styles.comment}>
             <Image style={styles.avatar} source={{ uri: "https://picsum.photos/id/10/50/50" }} />
             <View style={styles.commentContent}>
-                <Text style={styles.commentUsername}>{com.username}</Text>
+                <Text style={styles.commentUsername}>{com.uid}</Text>
                 <Text style={styles.commentText}>{com.text}</Text>
             </View>
         </View>
@@ -31,9 +31,11 @@ const styles = StyleSheet.create({
     commentUsername: {
         fontWeight: 'bold',
         fontSize: 14,
+        color: '#fff'
     },
     commentText: {
         fontSize: 13,
+        color: '#fff'
     },
 });
 

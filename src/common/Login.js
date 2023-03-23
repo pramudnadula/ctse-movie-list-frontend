@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 const Login = () => {
+    const navigation = useNavigation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        // Handle login logic here
+        navigation.navigate('home')
     };
 
     const isDarkModeEnabled = true;
