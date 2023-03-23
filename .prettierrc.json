@@ -1,0 +1,25 @@
+{
+	"printWidth": 120,
+	"useTabs": true,
+	"singleQuote": true,
+	"proseWrap": "always",
+	"overrides": [
+		{
+			"files": [".vscode/*.json"],
+			"options": {
+				"parser": "json5",
+				"trailingComma": "all",
+				"quoteProps": "preserve",
+				"singleQuote": false
+			}
+		}
+	],
+	"arrowParens": "always",
+	"jsxBracketSameLine": false,
+	"jsxSingleQuote": false,
+	"quoteProps": "as-needed",
+	"semi": true,
+	"tabWidth": 4,
+	"trailingComma": "es5",
+	"endOfLine": "auto"
+}
