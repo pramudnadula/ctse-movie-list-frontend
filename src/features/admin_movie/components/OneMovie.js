@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, ToastAndroid } from 'r
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const OneMovie = ({ post }) => {
 	const genres = [
@@ -35,112 +36,120 @@ const OneMovie = ({ post }) => {
 			ToastAndroid.show('Removed From WishList', ToastAndroid.SHORT);
 		}
 	};
+	const navigation = useNavigation();
+	const gotoviewpage = (id) => {
+		navigation.navigate('viewOneMovie', { pid: id });
+	};
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.leftContainer}>
-				<Image
-					style={styles.image}
-					source={{
-						uri: post?.image1
-							? post?.image1
-							: 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg',
-					}}
-				/>
-			</View>
+		<TouchableOpacity onPress={() => gotoviewpage(post?.id)}>
+			<View style={styles.container}>
+				<View style={styles.leftContainer}>
+					<Image
+						style={styles.image}
+						source={{
+							uri: post?.image1
+								? post?.image1
+								: 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg',
+						}}
+					/>
+				</View>
 
-			<View style={styles.rightContainer}>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 22,
-						fontWeight: 'bold',
-						fontFamily: 'sans-serif',
-					}}
-				>
-					{post?.title ? post?.title : 'No Title'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						backgroundColor: genres.find((genre) => genre.name === post?.genre)?.color,
-						padding: 5,
-						width: 100,
-						borderRadius: 5,
-						fontSize: 16,
-						fontWeight: 'bold',
-					}}
-				>
-					{post?.genre}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 16,
-						height: 24,
-						width: '100%',
-					}}
-				>
-					{post?.description ? post?.description : 'No Description'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 12,
-					}}
-				>
-					{post?.year ? `Release Date: ${post?.year}` : 'No Release Date : Still in Production'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 12,
-					}}
-				>
-					{post?.rate
-						? (post?.rate == 1 && '⭐') ||
-						  (post?.rate == 2 && '⭐⭐') ||
-						  (post?.rate == 3 && '⭐⭐⭐') ||
-						  (post?.rate == 4 && '⭐⭐⭐⭐') ||
-						  (post?.rate == 5 && '⭐⭐⭐⭐⭐')
-						: 'No Rating'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 12,
-					}}
-				>
-					{post?.duration
-						? Math.floor(post?.duration / 60) + 'h ' + (post?.duration % 60) + 'm'
-						: 'No Duration'}
-				</Text>
-				<TouchableOpacity
-					style={{
-						backgroundColor: wishList ? 'red' : 'black',
-						width: 35,
-						height: 45,
-						borderBottomEndRadius: 10,
-						borderBottomStartRadius: 10,
-						justifyContent: 'center',
-						alignItems: 'center',
-						position: 'absolute',
-						right: 0,
-						bottom: 0,
-					}}
-					onPress={() => handleWishList(post?.id, !wishList)}
-				>
-					<Ionicons
+				<View style={styles.rightContainer}>
+					<Text
 						style={{
 							color: 'white',
+							fontSize: 22,
+							fontWeight: 'bold',
+							fontFamily: 'sans-serif',
 						}}
-						name="heart"
-						size={32}
-						color="black"
-					/>
-				</TouchableOpacity>
+					>
+						{post?.title ? post?.title : 'No Title'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							backgroundColor: genres.find((genre) => genre.name === post?.genre)?.color,
+							padding: 5,
+							width: 100,
+							borderRadius: 5,
+							fontSize: 16,
+							fontWeight: 'bold',
+						}}
+					>
+						{post?.genre}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 16,
+							height: 24,
+							width: '100%',
+						}}
+					>
+						{post?.description ? post?.description : 'No Description'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 12,
+						}}
+					>
+						{post?.year ? `Release Date: ${post?.year}` : 'No Release Date : Still in Production'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 12,
+						}}
+					>
+						{post?.rate
+							? (post?.rate == 1 && '⭐') ||
+							  (post?.rate == 2 && '⭐⭐') ||
+							  (post?.rate == 3 && '⭐⭐⭐') ||
+							  (post?.rate == 4 && '⭐⭐⭐⭐') ||
+							  (post?.rate == 5 && '⭐⭐⭐⭐⭐')
+							: 'No Rating'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 12,
+						}}
+					>
+						{post?.duration
+							? Math.floor(post?.duration / 60) + 'h ' + (post?.duration % 60) + 'm'
+							: 'No Duration'}
+					</Text>
+
+					<TouchableOpacity
+						style={{
+							backgroundColor: wishList ? 'red' : 'black',
+							width: 40,
+							height: 50,
+							padding: 4.5,
+							borderTopEndRadius: 10,
+							borderTopStartRadius: 10,
+							justifyContent: 'center',
+							alignItems: 'center',
+							position: 'absolute',
+							right: 0,
+							bottom: 0,
+						}}
+						onPress={() => handleWishList(post?.id, !wishList)}
+					>
+						<Ionicons
+							style={{
+								color: 'white',
+							}}
+							name="heart"
+							size={32}
+							color="black"
+						/>
+					</TouchableOpacity>
+				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 

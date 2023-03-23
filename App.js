@@ -10,11 +10,8 @@ import { ToastProvider } from 'react-native-toast-message';
 import Home from './src/common/Home';
 import AddMovie from './src/features/userMovie/pages/AddMovie';
 import AllMovies from './src/features/userMovie/pages/AllMovies';
-
 import Login from './src/features/user-management/pages/Login/Login';
-// import Login from './src/common/Login';
 import Register from './src/features/user-management/pages/Register/Register';
-
 import ReviewList from './src/features/movie_review/pages/ReviewList';
 import Sidebar from './src/common/Sidebar';
 import ReviewAdd from './src/features/movie_review/pages/ReviewAdd';
