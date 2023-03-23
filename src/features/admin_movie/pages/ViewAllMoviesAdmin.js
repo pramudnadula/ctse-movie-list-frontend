@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, FlatList, TextInput } from 'react-native
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import OneMovie from '../components/OneMovie';
+import FloatingButton from '../components/FloatingButton';
 
 const ViewAllMoviesAdmin = () => {
 	const db = getFirestore();
@@ -52,6 +53,7 @@ const ViewAllMoviesAdmin = () => {
 				keyExtractor={(post) => post.id.toString()}
 				renderItem={({ item }) => <OneMovie post={item} />}
 			/>
+			<FloatingButton />
 		</View>
 	);
 };
