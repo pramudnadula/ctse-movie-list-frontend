@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
 import { ToastProvider } from 'react-native-toast-message';
 import Home from './src/common/Home';
@@ -120,6 +120,9 @@ export default function App() {
 					} else if (route.name === 'Review') {
 						iconName = focused ? 'profile' : 'profile';
 						return <AntDesign name={iconName} size={size} color={color} />;
+					} else if (route.name === 'Admin Movie') {
+						iconName = focused ? 'movie' : 'movie-outline';
+						return <MaterialCommunityIcons name={iconName} size={24} color="black" />;
 					}
 				},
 				headerShown: false,
@@ -139,11 +142,7 @@ export default function App() {
 			}}
 		>
 			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
-			<Tab.Screen
-				name="adminViewMovie"
-				onPress={() => console.log('add button clicked')}
-				component={ViewAllMoviesAdmin}
-			/>
+			<Tab.Screen name="Admin Movie" component={ViewAllMoviesAdmin} />
 			{/* <Tab.Screen
         name="Login"
         onPress={() => console.log('Login button clicked')}
