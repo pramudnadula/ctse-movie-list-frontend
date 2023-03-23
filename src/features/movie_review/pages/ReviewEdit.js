@@ -4,6 +4,7 @@ import { Container, ImageContainer, SelectContainer, Input, InputContainer, Inpu
 import { ActivityIndicator, RadioButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { launchImageLibraryAsync } from 'expo-image-picker';
+import StarRating from 'react-native-star-rating';
 import RatingInput from '../components/Rating';
 import { POST } from '../../../common/httphelper';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +15,7 @@ import { getAuth } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import FlashMessage, { showMessage } from "react-native-flash-message";
+import Loading from '../components/Loading';
 export default function ReviewEdit() {
     const route = useRoute();
     const { pid } = route.params;
@@ -67,7 +69,7 @@ export default function ReviewEdit() {
                 setimg2(posts.img2)
                 setimg3(posts.img3)
                 setimg4(posts.img4)
-                setrate(posts.rate)
+                setrate(docSnap.data().rate)
                 setIsEnabled1(posts.like)
                 setIsEnabled2(posts.comment)
                 setloading(false)
@@ -202,6 +204,9 @@ export default function ReviewEdit() {
             message: "Document updated successfully!",
             type: "success",
         });
+        setTimeout(() => {
+            navigation.navigate('my')
+        }, 1000);
 
 
     };
@@ -260,195 +265,183 @@ export default function ReviewEdit() {
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.container}>
-                <View style={styles.form}>
+            <View style={loading ? styles.container2 : styles.container}>
+                {loading ? <Loading /> : <>
+                    <View style={styles.form}>
 
-                    <Text style={styles.label}>Title:</Text>
-                    <TextInput
-                        style={[styles.input, !isValidtitle && styles.invalidInput]}
-                        value={title}
-                        onChangeText={setTitle}
-                        placeholder="Enter the Title"
-                        placeholderTextColor="#B3B3B3"
-                    />
-                    {!isValidtitle && <Text style={styles.errorText}>Please enter a valid title</Text>}
+                        <Text style={styles.label}>Title:</Text>
+                        <TextInput
+                            style={[styles.input, !isValidtitle && styles.invalidInput]}
+                            value={title}
+                            onChangeText={setTitle}
+                            placeholder="Enter the Title"
+                            placeholderTextColor="#B3B3B3"
+                        />
+                        {!isValidtitle && <Text style={styles.errorText}>Please enter a valid title</Text>}
 
-                    <Text style={styles.label}>Movie Name:</Text>
-                    <TextInput
-                        style={[styles.input, !isValidmname && styles.invalidInput]}
-                        value={mname}
-                        onChangeText={setmname}
-                        placeholder="Enter the Movie name"
-                        placeholderTextColor="#B3B3B3"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                    />
-                    {!isValidmname && <Text style={styles.errorText}>Please enter a valid Movie Name</Text>}
+                        <Text style={styles.label}>Movie Name:</Text>
+                        <TextInput
+                            style={[styles.input, !isValidmname && styles.invalidInput]}
+                            value={mname}
+                            onChangeText={setmname}
+                            placeholder="Enter the Movie name"
+                            placeholderTextColor="#B3B3B3"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                        {!isValidmname && <Text style={styles.errorText}>Please enter a valid Movie Name</Text>}
 
-                    <Text style={styles.label}>Description:</Text>
-                    <TextInput
-                        style={[styles.textArea, !isValiddes && styles.invalidInput]}
-                        value={des}
-                        onChangeText={setdes}
-                        placeholder="Type the description here"
-                        placeholderTextColor="#B3B3B3"
-                        multiline={true}
-                        numberOfLines={5}
-                    />
-                    {!isValiddes && <Text style={styles.errorText}>Please enter a valid description</Text>}
-                    <Text style={styles.label}>Video Link:</Text>
-                    <TextInput
-                        style={[styles.textArea, !isValidvlink && styles.invalidInput]}
-                        value={vlink}
-                        onChangeText={setvlink}
-                        placeholder="Type the Video Link here"
-                        placeholderTextColor="#B3B3B3"
-                        multiline={true}
-                        numberOfLines={5}
-                    />
-                    {!isValidvlink && <Text style={styles.errorText}>Please enter a valid link</Text>}
-                    <Text style={styles.label}>Images:</Text>
-                    {/* <View style={styles.imageUploadContainer}>
-                        {type === 1 || type === 2 || type === 3 ? <>
-                            <TouchableOpacity style={styles.imageUploader} onPress={() => handleImagePicker(0)}>
-                                <Text style={styles.imageUploaderText}>Upload Image 1</Text>
-                            </TouchableOpacity>
-                        </> : <></>}
+                        <Text style={styles.label}>Description:</Text>
+                        <TextInput
+                            style={[styles.textArea, !isValiddes && styles.invalidInput]}
+                            value={des}
+                            onChangeText={setdes}
+                            placeholder="Type the description here"
+                            placeholderTextColor="#B3B3B3"
+                            multiline={true}
+                            numberOfLines={5}
+                        />
+                        {!isValiddes && <Text style={styles.errorText}>Please enter a valid description</Text>}
+                        <Text style={styles.label}>Video Link:</Text>
+                        <TextInput
+                            style={[styles.textArea, !isValidvlink && styles.invalidInput]}
+                            value={vlink}
+                            onChangeText={setvlink}
+                            placeholder="Type the Video Link here"
+                            placeholderTextColor="#B3B3B3"
+                            multiline={true}
+                            numberOfLines={5}
+                        />
+                        {!isValidvlink && <Text style={styles.errorText}>Please enter a valid link</Text>}
+                        <Text style={styles.label}>Images:</Text>
+                        <View style={styles.imageUploadContainer}>
+                            {type === 1 || type === 2 || type === 3 ? <>
+                                <Text style={styles.label}>Image 1 url:</Text>
 
-                        {type === 2 || type === 3 ? <>
-                            <TouchableOpacity style={styles.imageUploader} onPress={() => handleImagePicker(1)}>
-                                <Text style={styles.imageUploaderText}>Upload Image 2</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.imageUploader} onPress={() => handleImagePicker(2)}>
-                                <Text style={styles.imageUploaderText}>Upload Image 3</Text>
-                            </TouchableOpacity>
-                        </> : <></>}
+                                {img1 !== '' ? <>
+                                    <View style={styles.showpic}>
+                                        <Image style={styles.showim} source={{ uri: img1 }} />
+                                        <TouchableOpacity onPress={() => setimg1('')}>
+                                            <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
+                                                <Ionicons name="trash" size={32} color="#fb5b5a" />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
 
-                        {type === 3 ? <>
-                            <TouchableOpacity style={styles.imageUploader} onPress={() => handleImagePicker(3)}>
-                                <Text style={styles.imageUploaderText}>Upload Image 4</Text>
-                            </TouchableOpacity>
-                        </> : <></>}
-
-                    </View> */}
-                    <View style={styles.imageUploadContainer}>
-                        {type === 1 || type === 2 || type === 3 ? <>
-                            <Text style={styles.label}>Image 1 url:</Text>
-
-                            {img1 !== '' ? <>
-                                <View style={styles.showpic}>
-                                    <Image style={styles.showim} source={{ uri: img1 }} />
-                                    <TouchableOpacity onPress={() => setimg1('')}>
-                                        <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
-                                            <Ionicons name="trash" size={32} color="#fb5b5a" />
-                                        </View>
+                                </> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(1)}>
+                                        <Text style={styles.buttonText}>Image 1</Text>
                                     </TouchableOpacity>
-                                </View>
+                                </>}
+                                {!isValidim1 && <Text style={styles.errorText}>Please enter a valid url</Text>}
 
-                            </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(1)}>
-                                    <Text style={styles.buttonText}>Image 1</Text>
-                                </TouchableOpacity>
-                            </>}
-                            {!isValidim1 && <Text style={styles.errorText}>Please enter a valid url</Text>}
+                            </> : <></>}
 
-                        </> : <></>}
-
-                        {type === 2 || type === 3 ? <>
+                            {type === 2 || type === 3 ? <>
 
 
-                            <Text style={styles.label}>Image 2 url:</Text>
-                            {img2 !== '' ? <>
-                                <View style={styles.showpic}>
-                                    <Image style={styles.showim} source={{ uri: img2 }} />
-                                    <TouchableOpacity onPress={() => setimg2('')}>
-                                        <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
-                                            <Ionicons name="trash" size={32} color="#fb5b5a" />
-                                        </View>
+                                <Text style={styles.label}>Image 2 url:</Text>
+                                {img2 !== '' ? <>
+                                    <View style={styles.showpic}>
+                                        <Image style={styles.showim} source={{ uri: img2 }} />
+                                        <TouchableOpacity onPress={() => setimg2('')}>
+                                            <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
+                                                <Ionicons name="trash" size={32} color="#fb5b5a" />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                </> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(2)}>
+                                        <Text style={styles.buttonText}>Image 2</Text>
                                     </TouchableOpacity>
-                                </View>
+                                </>}
 
-                            </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(2)}>
-                                    <Text style={styles.buttonText}>Image 2</Text>
-                                </TouchableOpacity>
-                            </>}
+                                {!isValidim2 && <Text style={styles.errorText}>Please enter a valid url</Text>}
+                                <Text style={styles.label}>Image 3 url:</Text>
 
-                            {!isValidim2 && <Text style={styles.errorText}>Please enter a valid url</Text>}
-                            <Text style={styles.label}>Image 3 url:</Text>
+                                {img3 !== '' ? <>
+                                    <View style={styles.showpic}>
+                                        <Image style={styles.showim} source={{ uri: img3 }} />
+                                        <TouchableOpacity onPress={() => setimg3('')}>
+                                            <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
+                                                <Ionicons name="trash" size={32} color="#fb5b5a" />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
 
-                            {img3 !== '' ? <>
-                                <View style={styles.showpic}>
-                                    <Image style={styles.showim} source={{ uri: img3 }} />
-                                    <TouchableOpacity onPress={() => setimg3('')}>
-                                        <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
-                                            <Ionicons name="trash" size={32} color="#fb5b5a" />
-                                        </View>
+                                </> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(3)}>
+                                        <Text style={styles.buttonText}>Image 3</Text>
                                     </TouchableOpacity>
-                                </View>
+                                </>}
 
-                            </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(3)}>
-                                    <Text style={styles.buttonText}>Image 3</Text>
-                                </TouchableOpacity>
-                            </>}
+                                {!isValidim3 && <Text style={styles.errorText}>Please enter a valid url</Text>}
+                            </> : <></>}
 
-                            {!isValidim3 && <Text style={styles.errorText}>Please enter a valid url</Text>}
-                        </> : <></>}
+                            {type === 3 ? <>
+                                <Text style={styles.label}>Image 4 url:</Text>
+                                {img4 !== '' ? <>
+                                    <View style={styles.showpic}>
+                                        <Image style={styles.showim} source={{ uri: img4 }} />
+                                        <TouchableOpacity onPress={() => setimg4('')}>
+                                            <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
+                                                <Ionicons name="trash" size={32} color="#fb5b5a" />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
 
-                        {type === 3 ? <>
-                            <Text style={styles.label}>Image 4 url:</Text>
-                            {img4 !== '' ? <>
-                                <View style={styles.showpic}>
-                                    <Image style={styles.showim} source={{ uri: img4 }} />
-                                    <TouchableOpacity onPress={() => setimg4('')}>
-                                        <View style={{ padding: 8, alignSelf: 'center', marginLeft: 40 }}>
-                                            <Ionicons name="trash" size={32} color="#fb5b5a" />
-                                        </View>
+                                </> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(4)}>
+                                        <Text style={styles.buttonText}>Image 4</Text>
                                     </TouchableOpacity>
-                                </View>
-
-                            </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(4)}>
-                                    <Text style={styles.buttonText}>Image 4</Text>
-                                </TouchableOpacity>
-                            </>}
+                                </>}
 
 
-                            {!isValidim4 && <Text style={styles.errorText}>Please enter a valid url</Text>}
-                        </> : <></>}
+                                {!isValidim4 && <Text style={styles.errorText}>Please enter a valid url</Text>}
+                            </> : <></>}
 
+                        </View>
+                        <Text style={styles.label}>Rate the Movie</Text>
+                        <StarRating
+                            disabled={false}
+                            maxStars={5}
+                            rating={rate}
+                            selectedStar={(rating) => setrate(rating)}
+                            fullStarColor="#fb5b5a"
+                            starSize={40}
+                            containerStyle={{ marginVertical: 20 }}
+                        />
+
+                        <SwichGroup>
+                            <OneSwitch>
+                                <Text style={styles.label}>Likes</Text>
+                                <Switch
+                                    trackColor={{ false: '#767577', true: '#fb5b5a' }}
+                                    thumbColor={isEnabled1 ? '#fb5b5a' : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={toggleSwitch1}
+                                    value={isEnabled1}
+                                />
+                            </OneSwitch>
+
+                            <OneSwitch>
+                                <Text style={styles.label}>Comments</Text>
+                                <Switch
+                                    trackColor={{ false: '#767577', true: '#fb5b5a' }}
+                                    thumbColor={isEnabled2 ? '#fb5b5a' : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={toggleSwitch2}
+                                    value={isEnabled2}
+                                />
+                            </OneSwitch>
+                        </SwichGroup>
+                        <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
+                            <Text style={styles.buttonText}>Update</Text>
+                        </TouchableOpacity>
                     </View>
+                </>}
 
-                    {/* <RatingInput selectedone={selectedone} def={rate} /> */}
-
-                    <SwichGroup>
-                        <OneSwitch>
-                            <Text style={styles.label}>Likes</Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#fb5b5a' }}
-                                thumbColor={isEnabled1 ? '#fb5b5a' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={toggleSwitch1}
-                                value={isEnabled1}
-                            />
-                        </OneSwitch>
-
-                        <OneSwitch>
-                            <Text style={styles.label}>Comments</Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#fb5b5a' }}
-                                thumbColor={isEnabled2 ? '#fb5b5a' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={toggleSwitch2}
-                                value={isEnabled2}
-                            />
-                        </OneSwitch>
-                    </SwichGroup>
-                    <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
-                        <Text style={styles.buttonText}>Update</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
             <FlashMessage position="bottom" />
         </ScrollView>
@@ -554,6 +547,10 @@ const styles = StyleSheet.create({
         color: 'black',
         borderRadius: 5,
         padding: 10,
+    },
+    container2: {
+        backgroundColor: '#222',
+        height: 700
     },
 
 });

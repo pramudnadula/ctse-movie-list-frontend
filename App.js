@@ -166,26 +166,14 @@ export default function App() {
         onPress={() => console.log('Profile button clicked')}
         component={ReviewList}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Login"
         onPress={() => console.log('Login button clicked')}
         component={Login}
-      />
-      <Tab.Screen
-        name="add"
-        onPress={() => console.log('add button clicked')}
-        component={ReviewAdd}
-      />
-      <Tab.Screen
-        name="listone"
-        onPress={() => console.log('add button clicked')}
-        component={AllList}
-      />
-      <Tab.Screen
-        name="my"
-        onPress={() => console.log('add button clicked')}
-        component={AddList}
-      />
+      /> */}
+
+
+
 
     </Tab.Navigator>
   )
@@ -202,8 +190,9 @@ export default function App() {
         <Stack.Screen name='home' component={Tabs} />
         <Stack.Screen name='edit' component={ReviewEdit} />
         <Stack.Screen name='ledit' component={EditList} />
-        <Stack.Screen name='list' component={ReviewList} />
-        <Stack.Screen name='my' component={UserPostsList} />
+        <Stack.Screen name='myreview' component={UserPostsList} />
+        <Stack.Screen name='reviewadd' component={ReviewAdd} />
+
       </Stack.Navigator>
     </NavigationContainer>
   )

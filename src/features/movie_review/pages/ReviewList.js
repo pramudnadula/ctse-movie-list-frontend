@@ -7,6 +7,8 @@ import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native';
 import SideNav from '../../../common/SideNav';
+import Loading from '../components/Loading';
+import FloatingButton from '../components/FloatingButton';
 
 
 const ReviewList = () => {
@@ -14,6 +16,7 @@ const ReviewList = () => {
     const db = getFirestore()
     const store = getStorage()
     const [posts, setPosts] = useState([])
+    const [loading, setloading] = useState(false)
 
 
     useEffect(() => {
@@ -26,7 +29,7 @@ const ReviewList = () => {
     }, [navigation]);
 
     const loadData = async () => {
-
+        setloading(true)
         const reviewsRef = collection(db, 'review');
         const querySnapshot = await getDocs(reviewsRef);
         const reviews = [];
@@ -36,16 +39,20 @@ const ReviewList = () => {
             reviews.push(review);
         });
         setPosts(reviews)
+        setloading(false)
 
     }
     return (
         <View style={styles.container}>
 
-            <FlatList
-                data={posts}
-                keyExtractor={post => post.id.toString()}
-                renderItem={({ item }) => <Post post={item} />}
-            />
+            {loading ? <Loading /> : <>
+                <FlatList
+                    data={posts}
+                    keyExtractor={post => post.id.toString()}
+                    renderItem={({ item }) => <Post post={item} />}
+                />
+            </>}
+            <FloatingButton />
         </View>
     );
 };

@@ -11,6 +11,8 @@ import * as firebase from "firebase/app";
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import Loading from '../components/Loading';
+import FloatingButton from '../components/FloatingButton';
 
 export default function ReviewAdd() {
     const [title, setTitle] = useState('');
@@ -23,6 +25,7 @@ export default function ReviewAdd() {
     const [img3, setimg3] = useState('');
     const [img4, setimg4] = useState('');
     const [vlink, setvlink] = useState('');
+    const [index, setindex] = useState(0);
     const [isValiddes, setisValiddes] = useState(true);
     const [isValidtitle, setisValidtitle] = useState(true);
     const [isValidmname, setisValidmname] = useState(true);
@@ -31,9 +34,7 @@ export default function ReviewAdd() {
     const [isValidim2, setisValidim2] = useState(true);
     const [isValidim3, setisValidim3] = useState(true);
     const [isValidim4, setisValidim4] = useState(true);
-
-
-
+    const [loading, setloading] = useState(false);
     const [isEnabled1, setIsEnabled1] = useState(false);
     const [isEnabled2, setIsEnabled2] = useState(false);
     const toggleSwitch1 = () => setIsEnabled1(previousState => !previousState);
@@ -163,13 +164,14 @@ export default function ReviewAdd() {
 
     };
     const handleImagePicker = async (index) => {
+        setindex(index)
         try {
             const result = await launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 quality: 1,
             });
-
+            setloading(true)
             if (!result.canceled) {
                 const storage = getStorage();
                 const imageRef = ref(storage, `images/${Date.now()}.jpg`);
@@ -187,7 +189,7 @@ export default function ReviewAdd() {
                     xhr.send(null);
                 });
 
-                // Upload the bytes to Firebase storage
+
                 await uploadBytes(imageRef, blob);
                 const imageUrl = await getDownloadURL(imageRef);
                 if (index === 1) {
@@ -203,6 +205,7 @@ export default function ReviewAdd() {
                     setimg4(imageUrl)
                     setisValidim4(true)
                 }
+                setloading(false)
             }
         } catch (error) {
             console.log(error);
@@ -314,9 +317,12 @@ export default function ReviewAdd() {
                                 </View>
 
                             </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(1)}>
-                                    <Text style={styles.buttonText}>Image 1</Text>
-                                </TouchableOpacity>
+                                {loading && index === 1 ? <Loading /> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(1)}>
+                                        <Text style={styles.buttonText}>Image 1</Text>
+                                    </TouchableOpacity>
+                                </>}
+
                             </>}
                             {!isValidim1 && <Text style={styles.errorText}>Please enter a valid url</Text>}
 
@@ -337,9 +343,12 @@ export default function ReviewAdd() {
                                 </View>
 
                             </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(2)}>
-                                    <Text style={styles.buttonText}>Image 2</Text>
-                                </TouchableOpacity>
+                                {loading && index === 2 ? <Loading /> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(2)}>
+                                        <Text style={styles.buttonText}>Image 2</Text>
+                                    </TouchableOpacity>
+                                </>}
+
                             </>}
 
                             {!isValidim2 && <Text style={styles.errorText}>Please enter a valid url</Text>}
@@ -356,9 +365,12 @@ export default function ReviewAdd() {
                                 </View>
 
                             </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(3)}>
-                                    <Text style={styles.buttonText}>Image 3</Text>
-                                </TouchableOpacity>
+                                {loading && index === 3 ? <Loading /> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(3)}>
+                                        <Text style={styles.buttonText}>Image 3</Text>
+                                    </TouchableOpacity>
+                                </>}
+
                             </>}
 
                             {!isValidim3 && <Text style={styles.errorText}>Please enter a valid url</Text>}
@@ -377,9 +389,12 @@ export default function ReviewAdd() {
                                 </View>
 
                             </> : <>
-                                <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(4)}>
-                                    <Text style={styles.buttonText}>Image 4</Text>
-                                </TouchableOpacity>
+                                {loading && index === 4 ? <Loading /> : <>
+                                    <TouchableOpacity style={styles.buttond} onPress={() => handleImagePicker(4)}>
+                                        <Text style={styles.buttonText}>Image 4</Text>
+                                    </TouchableOpacity>
+                                </>}
+
                             </>}
 
 
@@ -417,7 +432,9 @@ export default function ReviewAdd() {
                         <Text style={styles.buttonText}>Submit</Text>
                     </TouchableOpacity>
                 </View>
+
             </View>
+
         </ScrollView>
     );
 }

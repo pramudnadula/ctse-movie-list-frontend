@@ -16,7 +16,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
         setIsCommentModalVisible(true)
     }
     const gotoviewpage = () => {
-        navigation.navigate('my', { pid: post.id })
+        navigation.navigate('one', { pid: post.id })
     }
 
 

@@ -6,8 +6,11 @@ export default function RatingInput({ selectedone, view, def }) {
     const [rating, setRating] = useState(def !== '' ? def : 0);
 
     const handlePress = (value) => {
-        setRating(value);
-        selectedone(value);
+        if (!view) {
+            setRating(value);
+            selectedone(value);
+        }
+
     };
 
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,6 +14,8 @@ import {
     Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Loading from '../components/Loading';
+import FloatingButton from '../components/FloatingButton';
 
 
 
@@ -22,6 +24,7 @@ const UserPostsList = () => {
     const db = getFirestore()
 
     const [posts, setPosts] = useState([])
+    const [loading, setloading] = useState(false)
     const [delid, setdelid] = useState('')
 
 
@@ -35,9 +38,9 @@ const UserPostsList = () => {
     }, [navigation]);
 
     const loadData = async () => {
-
+        setloading(true)
         const reviewsRef = collection(db, 'review');
-        const querySnapshot = await getDocs(reviewsRef);
+        const querySnapshot = await getDocs(query(reviewsRef, where('uid', '==', 'xX4OtaV4j5fLIE1k2cL7l4igkeN2')));
         const reviews = [];
         querySnapshot.forEach((doc) => {
             const review = doc.data();
@@ -45,6 +48,7 @@ const UserPostsList = () => {
             reviews.push(review);
         });
         setPosts(reviews)
+        setloading(false)
 
     }
     const [selectedPost, setSelectedPost] = useState(null);
@@ -102,11 +106,14 @@ const UserPostsList = () => {
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={posts}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-            />
+            {loading ? <Loading /> : <>
+                <FlatList
+                    data={posts}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                />
+            </>}
+
             <Modal
                 transparent={true}
                 visible={modalVisible}
@@ -140,6 +147,7 @@ const UserPostsList = () => {
                     </View>
                 </View>
             </Modal>
+            <FloatingButton />
         </View>
     );
 };
@@ -149,6 +157,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#121212',
         paddingHorizontal: 10,
+    },
+    container2: {
+        backgroundColor: '#121212',
+        height: 700
     },
     item: {
         backgroundColor: '#212121',
