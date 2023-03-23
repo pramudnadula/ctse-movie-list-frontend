@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, Text, TextInput, View, Switch, TouchableOpacity, ScrollView, Button } from 'react-native';
 import { Container, ImageContainer, SelectContainer, Input, InputContainer, InputTextArea, InputView, RadioContainer, RadioHolder, SelectImage, TitleText, SwichGroup, OneSwitch, AddImage, VisibleImageBox, EditButton } from '../styles/add';
 import { ActivityIndicator, RadioButton } from 'react-native-paper';
@@ -9,10 +9,15 @@ import { POST } from '../../../common/httphelper';
 import { Ionicons } from '@expo/vector-icons';
 import * as firebase from "firebase/app";
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-
-export default function ReviewAdd() {
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
+import FlashMessage, { showMessage } from "react-native-flash-message";
+export default function ReviewEdit() {
+    const route = useRoute();
+    const { pid } = route.params;
+    const navigation = useNavigation();
     const [title, setTitle] = useState('');
     const [type, setType] = useState(1);
     const [mname, setmname] = useState('');
@@ -31,13 +36,51 @@ export default function ReviewAdd() {
     const [isValidim2, setisValidim2] = useState(true);
     const [isValidim3, setisValidim3] = useState(true);
     const [isValidim4, setisValidim4] = useState(true);
-
-
-
     const [isEnabled1, setIsEnabled1] = useState(false);
     const [isEnabled2, setIsEnabled2] = useState(false);
+    const [loading, setloading] = useState(false);
+    const [post, setpost] = useState(false);
     const toggleSwitch1 = () => setIsEnabled1(previousState => !previousState);
     const toggleSwitch2 = () => setIsEnabled2(previousState => !previousState);
+    useEffect(() => {
+
+        loadDocumentById()
+    }, [pid])
+
+    const loadDocumentById = async () => {
+        setloading(true)
+        try {
+            const db = getFirestore();
+            const docRef = doc(db, 'review', pid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const posts = docSnap.data()
+                posts.id = docSnap.id
+                setpost(posts)
+                setTitle(posts.title)
+                setmname(posts.mname)
+                setdes(posts.Description)
+                setvlink(posts.vlink)
+                setType(posts.type)
+                setimg1(posts.img1)
+                setimg2(posts.img2)
+                setimg3(posts.img3)
+                setimg4(posts.img4)
+                setrate(posts.rate)
+                setIsEnabled1(posts.like)
+                setIsEnabled2(posts.comment)
+                setloading(false)
+            } else {
+                console.log("Document does not exist!");
+                return null;
+            }
+        } catch (error) {
+            console.log("Error loading document:", error);
+            return null;
+        }
+    }
+
     const selectedone = (value) => {
         setrate(value);
     }
@@ -148,17 +191,17 @@ export default function ReviewAdd() {
             rate,
             comment: isEnabled2,
             like: isEnabled1,
-            likes: 0,
+            likes: post.likes,
             comments: 0,
-            uid: 'xX4OtaV4j5fLIE1k2cL7l4igkeN2',//getAuth().currentUser.uid,
+            uid: post.uid,//getAuth().currentUser.uid,
         }
         const db = getFirestore();
-        try {
-            const docRef = await addDoc(collection(db, 'review'), ob);
-            console.log('Document written with ID: ', docRef.id);
-        } catch (e) {
-            console.error('Error adding document: ', e);
-        }
+        const docRef = doc(db, "review", post.id);
+        await updateDoc(docRef, ob);
+        showMessage({
+            message: "Document updated successfully!",
+            type: "success",
+        });
 
 
     };
@@ -171,8 +214,11 @@ export default function ReviewAdd() {
             });
 
             if (!result.canceled) {
+                // Get the Firebase storage reference for the image
                 const storage = getStorage();
                 const imageRef = ref(storage, `images/${Date.now()}.jpg`);
+
+                // Convert the image to bytes for upload
                 const blob = await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
                     xhr.onload = () => {
@@ -216,21 +262,7 @@ export default function ReviewAdd() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
                 <View style={styles.form}>
-                    <Text style={styles.label}>Select the Template:</Text>
-                    <SelectContainer>
-                        <ImageContainer>
-                            <SelectImage source={require('../../../../assets/im.jpg')} />
-                            <RadioButton color='#fb5b5a' status={type === 1 ? 'checked' : 'unchecked'} onPress={() => setType(1)} />
-                        </ImageContainer>
-                        <ImageContainer>
-                            <SelectImage source={require('../../../../assets/im1.png')} />
-                            <RadioButton color='#fb5b5a' status={type === 2 ? 'checked' : 'unchecked'} onPress={() => setType(2)} />
-                        </ImageContainer>
-                        <ImageContainer>
-                            <SelectImage source={require('../../../../assets/im2.png')} />
-                            <RadioButton color='#fb5b5a' status={type === 3 ? 'checked' : 'unchecked'} onPress={() => setType(3)} />
-                        </ImageContainer>
-                    </SelectContainer>
+
                     <Text style={styles.label}>Title:</Text>
                     <TextInput
                         style={[styles.input, !isValidtitle && styles.invalidInput]}
@@ -388,7 +420,7 @@ export default function ReviewAdd() {
 
                     </View>
 
-                    <RatingInput selectedone={selectedone} />
+                    {/* <RatingInput selectedone={selectedone} def={rate} /> */}
 
                     <SwichGroup>
                         <OneSwitch>
@@ -414,10 +446,11 @@ export default function ReviewAdd() {
                         </OneSwitch>
                     </SwichGroup>
                     <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
-                        <Text style={styles.buttonText}>Submit</Text>
+                        <Text style={styles.buttonText}>Update</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            <FlashMessage position="bottom" />
         </ScrollView>
     );
 }

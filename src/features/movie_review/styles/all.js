@@ -122,6 +122,12 @@ width: 100%;
 flex-direction: row;
 `
 
+export const ImageBox2 = styled.View`
+display: flex;
+width: 100%;
+flex-direction: column;
+`
+
 export const ImageBoxContent1 = styled.View`
 flex: 1;
 height: 240px;
@@ -142,6 +148,7 @@ export const ImageBoxContent2 = styled.View`
 width: 50%;
 display: flex;
 height: 240px;
+z-index:1;
 flex-direction: column;
 `
 
