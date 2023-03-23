@@ -27,6 +27,7 @@ import AllList from './src/features/userMovie/pages/AllList';
 import EditList from './src/features/userMovie/pages/EditList';
 import AddMovieAdmin from './src/features/admin_movie/pages/AddMovieAdmin';
 import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAdmin';
+import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
 
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
@@ -82,110 +83,95 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export default function App() {
+	const Stack = createNativeStackNavigator();
+	const Tab = createBottomTabNavigator();
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+	const drawerStyles = {
+		drawer: {
+			shadowColor: '#000000',
+			shadowOpacity: 0.8,
+			shadowRadius: 3,
+			backgroundColor: '#222',
+			panOpenMask: 0.1,
+		},
+		main: { paddingLeft: 3 },
+	};
+	const toggleDrawer = () => {
+		setIsSidebarOpen(!isSidebarOpen);
+	};
 
-  const Stack = createNativeStackNavigator();
-  const Tab = createBottomTabNavigator();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const Tabs = () => (
+		<Tab.Navigator
+			screenOptions={({ navigation, route }) => ({
+				headerLeft: () => (
+					<TouchableOpacity onPress={() => toggleDrawer()}>
+						<View style={{ marginLeft: 10 }}>
+							<Ionicons name="menu-outline" size={24} color="black" />
+						</View>
+					</TouchableOpacity>
+				),
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName;
 
-  const drawerStyles = {
-    drawer: {
-      shadowColor: '#000000',
-      shadowOpacity: 0.8,
-      shadowRadius: 3,
-      backgroundColor: '#222',
-      panOpenMask: 0.1,
-    },
-    main: { paddingLeft: 3 },
-  };
-  const toggleDrawer = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const Tabs = () => (
-    <Tab.Navigator
-      screenOptions={({ navigation, route }) => ({
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => toggleDrawer()}>
-            <View style={{ marginLeft: 10 }}>
-              <Ionicons name="menu-outline" size={24} color="black" />
-            </View>
-          </TouchableOpacity>
-        ),
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Login') {
-            iconName = focused ? 'home' : 'home';
-            return <AntDesign name={iconName} size={size} color={color} />;
-          } else if (route.name === 'Review') {
-            iconName = focused ? 'profile' : 'profile';
-            return <AntDesign name={iconName} size={size} color={color} />;
-          }
-        },
-        headerShown: false
-      })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'gray',
-        style: {
-          backgroundColor: 'black',
-          borderTopWidth: 0,
-          shadowOffset: { width: 5, height: 3 },
-          shadowColor: 'black',
-          shadowOpacity: 0.5,
-          elevation: 5,
-          paddingTop: 5,
-        },
-      }}
-    >
-
-      <Tab.Screen
-        name="Review"
-        onPress={() => console.log('Profile button clicked')}
-        component={ReviewList}
-      />
-      <Tab.Screen
-				name="adminAddMovie"
-				onPress={() => console.log('add button clicked')}
-				component={AddMovieAdmin}
-			/>
+					if (route.name === 'Login') {
+						iconName = focused ? 'home' : 'home';
+						return <AntDesign name={iconName} size={size} color={color} />;
+					} else if (route.name === 'Review') {
+						iconName = focused ? 'profile' : 'profile';
+						return <AntDesign name={iconName} size={size} color={color} />;
+					}
+				},
+				headerShown: false,
+			})}
+			tabBarOptions={{
+				activeTintColor: 'tomato',
+				inactiveTintColor: 'gray',
+				style: {
+					backgroundColor: 'black',
+					borderTopWidth: 0,
+					shadowOffset: { width: 5, height: 3 },
+					shadowColor: 'black',
+					shadowOpacity: 0.5,
+					elevation: 5,
+					paddingTop: 5,
+				},
+			}}
+		>
+			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
 			<Tab.Screen
 				name="adminViewMovie"
 				onPress={() => console.log('add button clicked')}
 				component={ViewAllMoviesAdmin}
 			/>
-      {/* <Tab.Screen
+			{/* <Tab.Screen
         name="Login"
         onPress={() => console.log('Login button clicked')}
         component={Login}
       /> */}
+		</Tab.Navigator>
+	);
 
-
-
-
-    </Tab.Navigator>
-  )
-
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={({ route }) => ({
-        headerShown: route.name !== 'log',
-        headerRight: () => (
-          <KebabMenu />
-        ),
-      })}>
-        <Stack.Screen name='log' component={Login} />
-        <Stack.Screen name='home' component={Tabs} />
-        <Stack.Screen name='edit' component={ReviewEdit} />
-        <Stack.Screen name='ledit' component={EditList} />
-        <Stack.Screen name='myreview' component={UserPostsList} />
-        <Stack.Screen name='reviewadd' component={ReviewAdd} />
-
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
-};
+	return (
+		<NavigationContainer>
+			<Stack.Navigator
+				screenOptions={({ route }) => ({
+					headerShown: route.name !== 'log',
+					headerRight: () => <KebabMenu />,
+				})}
+			>
+				<Stack.Screen name="log" component={Login} />
+				<Stack.Screen name="home" component={Tabs} />
+				<Stack.Screen name="edit" component={ReviewEdit} />
+				<Stack.Screen name="ledit" component={EditList} />
+				<Stack.Screen name="myreview" component={UserPostsList} />
+				<Stack.Screen name="reviewadd" component={ReviewAdd} />
+				<Stack.Screen name="viewOneMovie" component={ViewOneMovieAdmin} />
+				<Stack.Screen name="Admin Add Movie" component={AddMovieAdmin} />
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
+}
 
 const styles = StyleSheet.create({
 	container: {
