@@ -60,7 +60,7 @@ const AddMovieAdmin = () => {
   const [genre, setGenre] = useState("");
   const [year, setYear] = useState("");
   const [duration, setDuration] = useState("");
-  const [review, setReview] = useState("");
+  // const [review, setReview] = useState("");
   const [video, setVideo] = useState("");
   const [isSeries, setIsSeries] = useState(false);
 
@@ -81,7 +81,7 @@ const AddMovieAdmin = () => {
     const imageRef = ref(storage, `images/${Date.now()}.jpg`);
     const moviesRef = collection(db, "AdminMovies");
     const newMovie = {
-      title,
+      title: title.toLowerCase(),
       description,
       type,
       image1,
@@ -92,7 +92,7 @@ const AddMovieAdmin = () => {
       genre,
       year,
       duration,
-      review,
+      // review,
       // video,
       isSeries,
     };
@@ -107,17 +107,17 @@ const AddMovieAdmin = () => {
     console.log("newMovie.genre = ", newMovie.genre);
     console.log("newMovie.year = ", newMovie.year);
     console.log("newMovie.duration = ", newMovie.duration);
-    console.log("newMovie.review = ", newMovie.review);
+    // console.log("newMovie.review = ", newMovie.review);
     // console.log("newMovie.video = ", newMovie.video);
     console.log("newMovie.isSeries = ", newMovie.isSeries);
 
-    // addDoc(moviesRef, newMovie)
-    //   .then((docRef) => {
-    //     console.log("Document written with ID: ", docRef.id);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error adding document: ", error);
-    //   });
+    addDoc(moviesRef, newMovie)
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      });
   };
 
   const handleImagePicker = async (index) => {
@@ -249,13 +249,13 @@ const AddMovieAdmin = () => {
             }}
           />
 
-          <Text style={styles.label}>Review: </Text>
+          {/* <Text style={styles.label}>Review: </Text>
           <TextInput
             style={styles.textArea}
             placeholder="Review"
             placeholderTextColor="#B3B3B3"
             onChangeText={(text) => setReview(text)}
-          />
+          /> */}
 
           <Text style={styles.label}>Is Series: </Text>
           <View style={styles.radioContainer}>

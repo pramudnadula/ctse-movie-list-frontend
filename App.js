@@ -19,6 +19,7 @@ import * as firebase from "firebase/app";
 import "firebase/storage";
 import * as Expo from "expo";
 import AddMovieAdmin from "./src/features/admin_movie/pages/AddMovieAdmin";
+import ViewAllMoviesAdmin from "./src/features/admin_movie/pages/ViewAllMoviesAdmin";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAP3EmZSGQq7iZieAoXlHUcYw1LsTkWbTA",
@@ -127,9 +128,14 @@ export default function App() {
           <Tab.Screen name="AddMovie" component={AddMovie} />
           <Tab.Screen name="AllMovie" component={AllMovies} />
           <Tab.Screen
-            name="addAdjmin"
+            name="adminAddMovie"
             onPress={() => console.log("add button clicked")}
             component={AddMovieAdmin}
+          />
+          <Tab.Screen
+            name="adminViewMovie"
+            onPress={() => console.log("add button clicked")}
+            component={ViewAllMoviesAdmin}
           />
         </Tab.Navigator>
       </Drawer>
