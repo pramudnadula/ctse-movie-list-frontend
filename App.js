@@ -186,8 +186,6 @@ export default function App() {
         onPress={() => console.log('add button clicked')}
         component={AddList}
       />
-      <Tab.Screen name="AddMovie" component={AddMovie} />
-      <Tab.Screen name="AllMovie" component={AllMovies} />
 
     </Tab.Navigator>
   )
