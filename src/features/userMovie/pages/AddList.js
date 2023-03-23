@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Image, ScrollView } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import CalendarPicker from 'react-native-calendar-picker';
 import DateField from 'react-native-datefield';
 import { useRoute } from '@react-navigation/native';
 import {
