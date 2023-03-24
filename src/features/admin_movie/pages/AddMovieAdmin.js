@@ -97,11 +97,11 @@ const AddMovieAdmin = () => {
 		};
 
 		if (title === '') {
-			// alert('Title is required');
-			// ToastAndroid.show('Title is required', ToastAndroid.SHORT);
 			Toast.show({
-				type: 'success',
+				type: 'error', // success, error, info
 				text1: 'Hello',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
 				text2: 'This is some something 👋',
 			});
 			return;
