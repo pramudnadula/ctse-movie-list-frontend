@@ -20,6 +20,8 @@ import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
 import RatingInput from '../components/Rating';
 import { useNavigation } from '@react-navigation/native';
+import { showMessage } from 'react-native-flash-message';
+import Toast from 'react-native-toast-message';
 
 const AddMovieAdmin = () => {
 	const navigation = useNavigation();
@@ -96,7 +98,12 @@ const AddMovieAdmin = () => {
 
 		if (title === '') {
 			// alert('Title is required');
-			ToastAndroid.show('Title is required', ToastAndroid.SHORT);
+			// ToastAndroid.show('Title is required', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'success',
+				text1: 'Hello',
+				text2: 'This is some something 👋',
+			});
 			return;
 		}
 		if (description === '') {
