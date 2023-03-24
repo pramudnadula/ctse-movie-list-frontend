@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ViewOneMovieAdmin = () => {
+const ViewOneMovieUser = () => {
 	const db = getFirestore();
 	const store = getStorage();
 	const route = useRoute();
@@ -17,9 +17,6 @@ const ViewOneMovieAdmin = () => {
 	console.log(mid);
 
 	const navigation = useNavigation();
-	const goEditPage = (id) => {
-		navigation.navigate('Admin Edit Movie', { mid: id });
-	};
 
 	const genres = [
 		{ name: 'Action', color: '#FF5733' },
@@ -48,8 +45,9 @@ const ViewOneMovieAdmin = () => {
 	const fetchMovieData = async () => {
 		try {
 			setLoading(true);
-
 			setIsAdmin((await AsyncStorage.getItem('isAdmin')) === 'true');
+			console.log(isAdmin);
+
 			const movieRef = doc(db, 'AdminMovies', mid);
 			const movieSnapshot = await getDoc(movieRef);
 			if (movieSnapshot.exists()) {
@@ -138,47 +136,6 @@ const ViewOneMovieAdmin = () => {
 		}
 	};
 
-	//! Delete Movie
-	const handleDelete = () => {
-		Alert.alert(
-			'Delete Movie',
-			'Are you sure you want to delete this movie?',
-			[
-				{
-					text: 'Cancel',
-					style: 'cancel',
-				},
-				{
-					text: 'OK',
-					onPress: () => {
-						// delete movie from Firebase
-						const db = getFirestore();
-						const storage = getStorage();
-						const moviesRef = collection(db, 'AdminMovies');
-						const movieId = mid; // get the movie ID from the route params
-						// Delete the movie document with the given ID
-						deleteDoc(doc(moviesRef, movieId))
-							.then(() => {
-								console.log('Document successfully deleted!');
-								Toast.show({
-									type: 'success', // success, error, info
-									text1: 'Deleted Successfully',
-									topOffset: 100,
-									visibilityTime: 1500, // if don't set this, it calls the default
-									text2: 'Movie Deleted Successfully ✅',
-								});
-								navigation.navigate('Admin Movie');
-							})
-							.catch((error) => {
-								console.error('Error deleting document: ', error);
-							});
-					},
-				},
-			],
-			{ cancelable: false }
-		);
-	};
-
 	return (
 		<>
 			{loading ? (
@@ -197,6 +154,16 @@ const ViewOneMovieAdmin = () => {
 				<View style={styles.container}>
 					<ScrollView style={{ width: '100%' }}>
 						<View style={styles.container}>
+							<Text
+								style={{
+									color: 'white',
+									fontSize: 22,
+									fontWeight: 'bold',
+									fontFamily: 'sans-serif',
+								}}
+							>
+								user
+							</Text>
 							<View
 								style={{
 									flexDirection: 'row',
@@ -224,49 +191,7 @@ const ViewOneMovieAdmin = () => {
 											: 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg',
 									}}
 								/>
-								{isAdmin && (
-									<>
-										<TouchableOpacity
-											style={{
-												justifyContent: 'center',
-												alignItems: 'center',
-												position: 'absolute',
-												right: 15,
 
-												top: 20,
-											}}
-											onPress={() => handleDelete()}
-										>
-											<Ionicons
-												style={{
-													color: '#950000',
-												}}
-												name="trash"
-												size={40}
-												color="black"
-											/>
-										</TouchableOpacity>
-										<TouchableOpacity
-											style={{
-												justifyContent: 'center',
-												alignItems: 'center',
-												position: 'absolute',
-												right: 15,
-												top: 80,
-											}}
-											onPress={() => navigation.navigate('Admin Edit Movie', { mid: mid })}
-										>
-											<Ionicons
-												style={{
-													color: 'green',
-												}}
-												name="create"
-												size={40}
-												color="black"
-											/>
-										</TouchableOpacity>
-									</>
-								)}
 								{!isAdmin && (
 									<TouchableOpacity
 										style={{
@@ -439,4 +364,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ViewOneMovieAdmin;
+export default ViewOneMovieUser;
