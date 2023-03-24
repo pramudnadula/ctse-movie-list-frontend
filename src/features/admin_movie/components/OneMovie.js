@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const OneMovie = ({ post }) => {
 	const genres = [
@@ -30,10 +31,22 @@ const OneMovie = ({ post }) => {
 		setWishList(wishList);
 		console.log(id);
 		if (wishList) {
-			ToastAndroid.show('Added To WishList', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'success', // success, error, info
+				text1: 'Added To WishList',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'You can see it in your profile',
+			});
 		}
 		if (!wishList) {
-			ToastAndroid.show('Removed From WishList', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Removed From WishList',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'You can see it in your profile',
+			});
 		}
 	};
 	const navigation = useNavigation();
