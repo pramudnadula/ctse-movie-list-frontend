@@ -99,31 +99,71 @@ const AddMovieAdmin = () => {
 		if (title === '') {
 			Toast.show({
 				type: 'error', // success, error, info
-				text1: 'Hello',
+				text1: 'Required Field',
 				topOffset: 100,
 				visibilityTime: 1500, // if don't set this, it calls the default
-				text2: 'This is some something 👋',
+				text2: 'Title is required ⚠️',
 			});
 			return;
 		}
 		if (description === '') {
-			// alert('Description is required');
-			ToastAndroid.show('Description is required', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Description is required ⚠️',
+			});
 			return;
 		}
-		if (type === '') {
-			// alert('Type is required');
-			ToastAndroid.show('Type is required', ToastAndroid.SHORT);
+		if (genre === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Genre is required ⚠️',
+			});
+			return;
+		}
+		if (year === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Year is required ⚠️',
+			});
+			return;
+		}
+		if (duration === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Duration is required ⚠️',
+			});
 			return;
 		}
 		if (image1 === '') {
-			// alert('Image 1 is required');
-			ToastAndroid.show('Image 1 is required', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Image 1 is required ⚠️',
+			});
 			return;
 		}
 		if (rate === '') {
-			// alert('Rate is required');
-			ToastAndroid.show('Rate is required', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Rate is required ⚠️',
+			});
 			return;
 		}
 		// console.log('newMovie.title = ', newMovie.title);
@@ -238,7 +278,7 @@ const AddMovieAdmin = () => {
 						placeholderTextColor="#B3B3B3"
 						onValueChange={(itemValue, itemIndex) => setGenre(itemValue)}
 					>
-						<Picker.Item label="Select Genre" value="Select Genre" />
+						<Picker.Item label="Select Genre" value="" />
 						{genres.map((item, index) => {
 							return <Picker.Item label={item} value={item} key={index} />;
 						})}

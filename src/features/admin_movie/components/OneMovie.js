@@ -64,7 +64,10 @@ const OneMovie = ({ post }) => {
 							fontFamily: 'sans-serif',
 						}}
 					>
-						{post?.title ? post?.title : 'No Title'}
+						{post?.title
+							? // first letter of title to uppercase and rest to lowercase every word
+							  (post?.title).replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
+							: 'No Title'}
 					</Text>
 					<Text
 						style={{
