@@ -28,6 +28,7 @@ import AllList from './src/features/userMovie/pages/AllList';
 import EditList from './src/features/userMovie/pages/EditList';
 import AddMovieAdmin from './src/features/admin_movie/pages/AddMovieAdmin';
 import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAdmin';
+import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
 
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
