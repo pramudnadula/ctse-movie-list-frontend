@@ -4,8 +4,10 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import OneMovie from '../components/OneMovie';
 import FloatingButton from '../components/FloatingButton';
+import { useNavigation } from '@react-navigation/native';
 
 const ViewAllMoviesAdmin = () => {
+	const navigation = useNavigation();
 	const db = getFirestore();
 	const store = getStorage();
 	const [movies, setMovies] = useState([]);
@@ -33,8 +35,13 @@ const ViewAllMoviesAdmin = () => {
 	};
 
 	useEffect(() => {
-		loadData();
-	}, [searchQuery, db]);
+		const unsubscribe = navigation.addListener('focus', () => {
+			loadData();
+			console.log('Returning to earlier page');
+		});
+
+		return unsubscribe;
+	}, [searchQuery, db, navigation]);
 
 	const handleSearch = (text) => {
 		setSearchQuery(text);
