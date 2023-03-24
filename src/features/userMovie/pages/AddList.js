@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Image, Scr
 import StarRating from 'react-native-star-rating';
 import DateField from 'react-native-datefield';
 import { useRoute } from '@react-navigation/native';
+import { getAuth } from 'firebase/auth'
 import {
 	getFirestore,
 	collection,
@@ -60,7 +61,7 @@ const AddList = () => {
 	const checkadded = async () => {
 		const db = getFirestore();
 		let firstDoc = {};
-		const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'; //firebase.auth().currentUser.uid;
+		const userId = getAuth().currentUser.uid;
 		const movieRef = collection(db, 'userMovie');
 		const querySnapshot = await getDocs(query(movieRef, where('uid', '==', userId)));
 		if (!querySnapshot.empty) {
@@ -79,7 +80,7 @@ const AddList = () => {
 	const submit = async () => {
 		const db = getFirestore();
 		let firstDoc = {};
-		const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'; //firebase.auth().currentUser.uid;
+		const userId = getAuth().currentUser.uid;
 		const movieRef = collection(db, 'userMovie');
 		const querySnapshot = await getDocs(query(movieRef, where('uid', '==', userId)));
 		if (!querySnapshot.empty) {

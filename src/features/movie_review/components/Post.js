@@ -44,6 +44,8 @@ import { useNavigation } from '@react-navigation/native';
 const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, openModal2 }) => {
 	const navigation = useNavigation();
 	const [comments, setcomments] = useState([]);
+	const [user, setuser] = useState({});
+	const [loguser, setloguser] = useState({});
 	const [comment, setComment] = useState('');
 	const setingcomments = (id) => {
 		loadComments(id);
@@ -60,7 +62,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 
 		const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
 			const newComments = [];
-			snapshot.forEach((doc) => {
+			snapshot.forEach(async (doc) => {
 				const commentData = doc.data();
 				commentData.id = doc.id;
 				newComments.push(commentData);
@@ -76,11 +78,14 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 		try {
 			const newCommentRef = await addDoc(collection(db, `review/${post.id}/comments`), {
 				text: newComment,
-				uid: 'xX4OtaV4j5fLIE1k2cL7l4igkeN2', //getAuth().currentUser.uid,
+				uid: getAuth().currentUser.uid,
+				uname: loguser.name,
+				pic: loguser.photo,
 				timestamp: serverTimestamp(),
 			});
 			console.log('Comment added with ID: ', newCommentRef.id);
 			setNewComment('');
+			loadComments(post.id)
 		} catch (error) {
 			console.error('Error adding comment: ', error);
 		}
@@ -93,10 +98,29 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 	const [likesCount, setLikesCount] = useState(post.likes || 0);
 	useEffect(() => {
 		checkliked();
+		getuser(post.uid)
+		getusers(getAuth().currentUser.uid)
 	}, []);
 
+	const getuser = async (id) => {
+		const db = getFirestore()
+		const docRef = doc(db, 'users', id);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			setuser(docSnap.data())
+			return docSnap.data()
+		}
+	}
+	const getusers = async (id) => {
+		const db = getFirestore()
+		const docRef = doc(db, 'users', id);
+		const docSnap = await getDoc(docRef);
+		setloguser(docSnap.data())
+	}
+
 	const checkliked = () => {
-		const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'; //firebase.auth().currentUser.uid;
+		const userId = getAuth().currentUser.uid;
 		const postRef = doc(getFirestore(), 'review', post.id);
 		const likesRef = doc(collection(postRef, 'likes'), userId);
 		getDoc(likesRef).then((doc) => {
@@ -107,13 +131,13 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 	};
 
 	const handleAddComment = () => {
-		// TODO: handle adding new comment to the comments list
+
 		console.log('New Comment:', newComment);
 		setNewComment('');
 		setIsCommentModalVisible(false);
 	};
 	const handleLike = () => {
-		const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'; //firebase.auth().currentUser.uid;
+		const userId = getAuth().currentUser.uid;
 		const postRef = doc(getFirestore(), 'review', post.id);
 		if (!liked) {
 			setliked(true);
@@ -126,7 +150,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 				transaction.set(doc(likesRef, userId), { createdAt: serverTimestamp() });
 				return newLikesCount;
 			})
-				.then((newLikesCount) => {})
+				.then((newLikesCount) => { })
 				.catch((error) => {
 					console.error(error);
 				});
@@ -141,7 +165,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 				transaction.delete(doc(likesRef, userId), { createdAt: serverTimestamp() });
 				return newLikesCount;
 			})
-				.then((newLikesCount) => {})
+				.then((newLikesCount) => { })
 				.catch((error) => {
 					console.error(error);
 				});
@@ -155,10 +179,10 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 		<Card>
 			<MainRow>
 				<UserInfo>
-					<UserImage source={{ uri: 'https://picsum.photos/id/10/50/50' }} />
+					<UserImage source={{ uri: user.photo }} />
 					<UserInfoText>
-						<UserName>Kavindu Chamith</UserName>
-						<PostTime>4 hours ago</PostTime>
+						<UserName>{user.name}</UserName>
+
 					</UserInfoText>
 				</UserInfo>
 				<View>
