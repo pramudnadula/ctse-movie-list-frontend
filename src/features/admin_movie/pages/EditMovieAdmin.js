@@ -1,3 +1,4 @@
+import { useRoute } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
 import {
 	StyleSheet,
@@ -16,14 +17,72 @@ import { RadioButton } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { ImageContainer, SelectContainer, SelectImage } from '../styles/addMovieStyles';
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
 import RatingInput from '../components/Rating';
 import { useNavigation } from '@react-navigation/native';
-import { showMessage } from 'react-native-flash-message';
-import Toast from 'react-native-toast-message';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
-const AddMovieAdmin = () => {
+const EditMovieAdmin = () => {
+	const db = getFirestore();
+	const store = getStorage();
+	const route = useRoute();
+	const { mid } = route.params;
+	console.log(mid);
+	//! get movie data from firebase
+	const [movieData, setMovieData] = useState(null);
+
+	const fetchMovieData = async () => {
+		try {
+			const movieRef = doc(db, 'AdminMovies', mid);
+			const movieSnapshot = await getDoc(movieRef);
+			if (movieSnapshot.exists()) {
+				setMovieData(movieSnapshot.data());
+			} else {
+				console.log('Movie not found');
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	console.log(movieData);
+
+	useEffect(() => {
+		fetchMovieData();
+	}, [db, mid]);
+
+	//! get movie data from firebase and set it to state
+	const [title, setTitle] = useState('');
+	const [description, setDescription] = useState('');
+	const [type, setType] = useState(1);
+	const [image1, setImage1] = useState('');
+	const [image2, setImage2] = useState('');
+	const [image3, setImage3] = useState('');
+	const [image4, setImage4] = useState('');
+	const [rate, setRate] = useState('');
+	const [genre, setGenre] = useState('');
+	const [year, setYear] = useState('');
+	const [duration, setDuration] = useState('');
+	const [isSeries, setIsSeries] = useState(false);
+
+	const [rating, setRating] = useState(0);
+	useEffect(() => {
+		setTitle(movieData?.title);
+		setDescription(movieData?.description);
+		setType(movieData?.type);
+		setImage1(movieData?.image1);
+		setImage2(movieData?.image2);
+		setImage3(movieData?.image3);
+		setImage4(movieData?.image4);
+		setRate(rating);
+		setGenre(movieData?.genre);
+		setYear(movieData?.year);
+		setDuration(movieData?.duration);
+		setIsSeries(movieData?.isSeries);
+		setRating(movieData?.rate);
+		selectDone(movieData?.rate);
+	}, [movieData, mid]);
+
 	const navigation = useNavigation();
 	const genres = [
 		'Action',
@@ -50,20 +109,6 @@ const AddMovieAdmin = () => {
 	}
 	years.reverse();
 
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [type, setType] = useState(1);
-	const [image1, setImage1] = useState('');
-	const [image2, setImage2] = useState('');
-	const [image3, setImage3] = useState('');
-	const [image4, setImage4] = useState('');
-	const [rate, setRate] = useState('');
-	const [genre, setGenre] = useState('');
-	const [year, setYear] = useState('');
-	const [duration, setDuration] = useState('');
-	const [isSeries, setIsSeries] = useState(false);
-	const [rating, setRating] = useState(0);
-
 	const [isValidim1, setisValidim1] = useState(true);
 	const [isValidim2, setisValidim2] = useState(true);
 	const [isValidim3, setisValidim3] = useState(true);
@@ -74,14 +119,14 @@ const AddMovieAdmin = () => {
 		setRating(value);
 	};
 
-	const handleSubmit = (e) => {
+	const handleUpdate = (e) => {
 		e.preventDefault();
-		// add movie to firebase
+		// update movie in Firebase
 		const db = getFirestore();
 		const storage = getStorage();
-		const imageRef = ref(storage, `images/${Date.now()}.jpg`);
 		const moviesRef = collection(db, 'AdminMovies');
-		const newMovie = {
+		const movieId = mid; // get the movie ID from the route params
+		const updatedMovie = {
 			title: title.toLowerCase(),
 			description,
 			type,
@@ -89,7 +134,7 @@ const AddMovieAdmin = () => {
 			image2,
 			image3,
 			image4,
-			rate,
+			rate: rate || 0,
 			genre,
 			year,
 			duration,
@@ -127,19 +172,21 @@ const AddMovieAdmin = () => {
 			return;
 		}
 
-		addDoc(moviesRef, newMovie)
-			.then((docRef) => {
+		// Update the movie document with the given ID
+		updateDoc(doc(moviesRef, movieId), updatedMovie)
+			.then(() => {
+				console.log('Document successfully updated!');
 				Toast.show({
 					type: 'success', // success, error, info
-					text1: 'Added Successfully',
+					text1: 'Updated Successfully',
 					topOffset: 100,
 					visibilityTime: 1500, // if don't set this, it calls the default
-					text2: 'New Movie Added Successfully ✅',
+					text2: 'Movie Updated Successfully ✅',
 				});
 				navigation.navigate('Admin Movie');
 			})
 			.catch((error) => {
-				console.error('Error adding document: ', error);
+				console.error('Error updating document: ', error);
 			});
 	};
 
@@ -163,6 +210,7 @@ const AddMovieAdmin = () => {
 						resolve(xhr.response);
 					};
 					xhr.onerror = (e) => {
+						console.log(e);
 						reject(new TypeError('Network request failed'));
 					};
 					xhr.responseType = 'blob';
@@ -212,6 +260,7 @@ const AddMovieAdmin = () => {
 						style={styles.input}
 						placeholder="Title"
 						placeholderTextColor="#B3B3B3"
+						value={title}
 						onChangeText={(text) => setTitle(text)}
 					/>
 					<Text style={styles.label}>Description: </Text>
@@ -219,6 +268,7 @@ const AddMovieAdmin = () => {
 						style={styles.textArea}
 						placeholder="Description"
 						placeholderTextColor="#B3B3B3"
+						value={description}
 						onChangeText={(text) => setDescription(text)}
 					/>
 					<Text style={styles.label}>Genre: </Text>
@@ -252,6 +302,7 @@ const AddMovieAdmin = () => {
 						style={styles.input}
 						placeholder="Duration (in minutes)"
 						placeholderTextColor="#B3B3B3"
+						value={duration?.toString()}
 						keyboardType="numeric"
 						onChangeText={(text) => {
 							if (/^\d+$/.test(text)) {
@@ -266,6 +317,7 @@ const AddMovieAdmin = () => {
 							}
 						}}
 					/>
+
 					<Text style={styles.label}>Is Series: </Text>
 					<View style={styles.radioContainer}>
 						<View style={styles.radio}>
@@ -457,7 +509,7 @@ const AddMovieAdmin = () => {
 					</View>
 					<RatingInput selectDone={selectDone} setRating={setRating} rating={rating} />
 					<View style={styles.buttonContainer}>
-						<Button title="Add Movie" onPress={handleSubmit} />
+						<Button title="Update Movie" onPress={handleUpdate} />
 					</View>
 				</View>
 			</View>
@@ -539,9 +591,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default AddMovieAdmin;
-
-// // Path: src\features\admin_movie\pages\editMovie.js
-// import React, { useState } from "react";
-
-// const EditMovie = () => {
+export default EditMovieAdmin;

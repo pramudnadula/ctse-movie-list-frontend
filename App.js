@@ -31,6 +31,7 @@ import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAd
 import FlashMessage from 'react-native-flash-message';
 import Toast from 'react-native-toast-message';
 import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
+import EditMovieAdmin from './src/features/admin_movie/pages/EditMovieAdmin';
 
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
@@ -172,6 +173,7 @@ export default function App() {
 				<Stack.Screen name="reviewadd" component={ReviewAdd} />
 				<Stack.Screen name="viewOneMovie" component={ViewOneMovieAdmin} />
 				<Stack.Screen name="Admin Add Movie" component={AddMovieAdmin} />
+				<Stack.Screen name="Admin Edit Movie" component={EditMovieAdmin} />
 			</Stack.Navigator>
 			<FlashMessage ref={ref} />
 			<Toast />

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function RatingInput({ selectDone }) {
-	const [rating, setRating] = useState(0);
+export default function RatingInput({ selectDone, setRating, rating }) {
+	// const [rating, setRating] = useState(0);
 
 	const handlePress = (value) => {
 		setRating(value);
