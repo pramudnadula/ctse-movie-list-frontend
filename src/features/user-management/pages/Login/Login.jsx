@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import { KeyboardAvoidingView } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const style = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -47,11 +48,18 @@ const style = StyleSheet.create({
 });
 
 function Login() {
+	const storeData = async (value) => {
+		try {
+			await AsyncStorage.setItem('isAdmin', String(value))
+		} catch (e) {
+			console.log(e)
+		}
+	}
 	const auth = getAuth();
 	const navigation = useNavigation();
 
-	const [email, setEmail] = useState('ravindu@gmail.com');
-	const [password, setPassword] = useState('Abc123');
+	const [email, setEmail] = useState('Kavi@gmail.com');
+	const [password, setPassword] = useState('123456');
 
 	const handleLogin = async () => {
 		try {
@@ -75,6 +83,13 @@ function Login() {
 			}
 
 			await signInWithEmailAndPassword(auth, email, password);
+			const db = getFirestore()
+			const docRef = doc(db, 'users', getAuth().currentUser.uid);
+			console.log(getAuth().currentUser.uid)
+			getDoc(docRef).then((docs) => {
+				storeData(docs.data().isAdmin)
+			})
+
 
 			Toast.show({
 				type: 'success', // success, error, info
