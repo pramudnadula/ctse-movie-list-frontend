@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Image, TextInput, View, ScrollView, Button, Text, TouchableOpacity } from 'react-native';
+import {
+	StyleSheet,
+	Image,
+	TextInput,
+	View,
+	ScrollView,
+	Button,
+	Text,
+	TouchableOpacity,
+	ToastAndroid,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 import { RadioButton } from 'react-native-paper';
@@ -9,8 +19,10 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
 import RatingInput from '../components/Rating';
+import { useNavigation } from '@react-navigation/native';
 
 const AddMovieAdmin = () => {
+	const navigation = useNavigation();
 	const genres = [
 		'Action',
 		'Comedy',
@@ -79,28 +91,53 @@ const AddMovieAdmin = () => {
 			genre,
 			year,
 			duration,
-			// review,
-			// video,
 			isSeries,
 		};
-		console.log('newMovie.title = ', newMovie.title);
-		console.log('newMovie.description = ', newMovie.description);
-		console.log('newMovie.type = ', newMovie.type);
-		console.log('newMovie.image1 = ', newMovie.image1);
-		console.log('newMovie.image2 = ', newMovie.image2);
-		console.log('newMovie.image3 = ', newMovie.image3);
-		console.log('newMovie.image4 = ', newMovie.image4);
-		console.log('newMovie.rate = ', newMovie.rate);
-		console.log('newMovie.genre = ', newMovie.genre);
-		console.log('newMovie.year = ', newMovie.year);
-		console.log('newMovie.duration = ', newMovie.duration);
-		// console.log("newMovie.review = ", newMovie.review);
-		// console.log("newMovie.video = ", newMovie.video);
-		console.log('newMovie.isSeries = ', newMovie.isSeries);
+
+		if (title === '') {
+			// alert('Title is required');
+			ToastAndroid.show('Title is required', ToastAndroid.SHORT);
+			return;
+		}
+		if (description === '') {
+			// alert('Description is required');
+			ToastAndroid.show('Description is required', ToastAndroid.SHORT);
+			return;
+		}
+		if (type === '') {
+			// alert('Type is required');
+			ToastAndroid.show('Type is required', ToastAndroid.SHORT);
+			return;
+		}
+		if (image1 === '') {
+			// alert('Image 1 is required');
+			ToastAndroid.show('Image 1 is required', ToastAndroid.SHORT);
+			return;
+		}
+		if (rate === '') {
+			// alert('Rate is required');
+			ToastAndroid.show('Rate is required', ToastAndroid.SHORT);
+			return;
+		}
+		// console.log('newMovie.title = ', newMovie.title);
+		// console.log('newMovie.description = ', newMovie.description);
+		// console.log('newMovie.type = ', newMovie.type);
+		// console.log('newMovie.image1 = ', newMovie.image1);
+		// console.log('newMovie.image2 = ', newMovie.image2);
+		// console.log('newMovie.image3 = ', newMovie.image3);
+		// console.log('newMovie.image4 = ', newMovie.image4);
+		// console.log('newMovie.rate = ', newMovie.rate);
+		// console.log('newMovie.genre = ', newMovie.genre);
+		// console.log('newMovie.year = ', newMovie.year);
+		// console.log('newMovie.duration = ', newMovie.duration);
+		// // console.log("newMovie.review = ", newMovie.review);
+		// // console.log("newMovie.video = ", newMovie.video);
+		// console.log('newMovie.isSeries = ', newMovie.isSeries);
 
 		addDoc(moviesRef, newMovie)
 			.then((docRef) => {
 				console.log('Document written with ID: ', docRef.id);
+				navigation.navigate('Admin Movie');
 			})
 			.catch((error) => {
 				console.error('Error adding document: ', error);
