@@ -59,7 +59,7 @@ const EditMovieAdmin = () => {
 	const [image2, setImage2] = useState('');
 	const [image3, setImage3] = useState('');
 	const [image4, setImage4] = useState('');
-	const [rate, setRate] = useState(5);
+	const [rate, setRate] = useState('');
 	const [genre, setGenre] = useState('');
 	const [year, setYear] = useState('');
 	const [duration, setDuration] = useState('');
@@ -80,6 +80,7 @@ const EditMovieAdmin = () => {
 		setDuration(movieData?.duration);
 		setIsSeries(movieData?.isSeries);
 		setRating(movieData?.rate);
+		selectDone(movieData?.rate);
 	}, [movieData, mid]);
 
 	const navigation = useNavigation();
@@ -115,6 +116,7 @@ const EditMovieAdmin = () => {
 
 	const selectDone = (value) => {
 		setRate(value);
+		setRating(value);
 	};
 
 	const handleUpdate = (e) => {
@@ -132,7 +134,7 @@ const EditMovieAdmin = () => {
 			image2,
 			image3,
 			image4,
-			rate,
+			rate: rate || 0,
 			genre,
 			year,
 			duration,
