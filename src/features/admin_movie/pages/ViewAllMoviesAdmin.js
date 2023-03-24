@@ -34,7 +34,7 @@ const ViewAllMoviesAdmin = () => {
 
 	useEffect(() => {
 		loadData();
-	}, [searchQuery]);
+	}, [searchQuery, db]);
 
 	const handleSearch = (text) => {
 		setSearchQuery(text);

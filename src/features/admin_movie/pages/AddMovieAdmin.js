@@ -166,6 +166,58 @@ const AddMovieAdmin = () => {
 			});
 			return;
 		}
+		if (type === 2 && image2 === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Image 2 is required ⚠️',
+			});
+			return;
+		}
+		if (type === 2 && image3 === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Image 3 is required ⚠️',
+			});
+			return;
+		}
+
+		if (type === 3 && image2 === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Image 2 is required ⚠️',
+			});
+			return;
+		}
+		if (type === 3 && image3 === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Image 3 is required ⚠️',
+			});
+			return;
+		}
+		if (type === 3 && image4 === '') {
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Required Field',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'Image 4 is required ⚠️',
+			});
+			return;
+		}
+
 		// console.log('newMovie.title = ', newMovie.title);
 		// console.log('newMovie.description = ', newMovie.description);
 		// console.log('newMovie.type = ', newMovie.type);
@@ -184,6 +236,13 @@ const AddMovieAdmin = () => {
 		addDoc(moviesRef, newMovie)
 			.then((docRef) => {
 				console.log('Document written with ID: ', docRef.id);
+				Toast.show({
+					type: 'success', // success, error, info
+					text1: 'Added Successfully',
+					topOffset: 100,
+					visibilityTime: 1500, // if don't set this, it calls the default
+					text2: 'New Movie Added Successfully ✅',
+				});
 				navigation.navigate('Admin Movie');
 			})
 			.catch((error) => {
