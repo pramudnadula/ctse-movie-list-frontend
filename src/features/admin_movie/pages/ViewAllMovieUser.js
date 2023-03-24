@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image, FlatList, TextInput } from 'react-native';
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import OneMovie from '../components/OneMovie';
-import FloatingButton from '../components/FloatingButton';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OneMovieUser from '../components/OneMovieUser';
 
-const ViewAllMoviesAdmin = () => {
+const ViewAllMovieUser = () => {
 	const navigation = useNavigation();
 	const db = getFirestore();
 	const store = getStorage();
@@ -61,9 +60,8 @@ const ViewAllMoviesAdmin = () => {
 			<FlatList
 				data={movies}
 				keyExtractor={(movie) => movie.id.toString()}
-				renderItem={({ item }) => <OneMovie movie={item} isAdmin={isAdmin} />}
+				renderItem={({ item }) => <OneMovieUser movie={item} />}
 			/>
-			{isAdmin && <FloatingButton />}
 		</View>
 	);
 };
@@ -84,4 +82,4 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 	},
 });
-export default ViewAllMoviesAdmin;
+export default ViewAllMovieUser;

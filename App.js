@@ -31,6 +31,8 @@ import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAd
 import Toast from 'react-native-toast-message';
 import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
 import EditMovieAdmin from './src/features/admin_movie/pages/EditMovieAdmin';
+import ViewAllMovieUser from './src/features/admin_movie/pages/ViewAllMovieUser';
+import ViewOneMovieUser from './src/features/admin_movie/pages/ViewOneMovieUser';
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
 const LogoutIcon = () => <Ionicons name="ios-log-out" size={23} color="white" />;
@@ -126,6 +128,9 @@ export default function App() {
 					} else if (route.name === 'Admin Movie') {
 						iconName = focused ? 'movie' : 'movie-outline';
 						return <MaterialCommunityIcons name={iconName} size={24} color="black" />;
+					} else if (route.name === 'Movie') {
+						iconName = focused ? 'movie' : 'movie-outline';
+						return <MaterialCommunityIcons name={iconName} size={24} color="black" />;
 					}
 				},
 				headerShown: false,
@@ -146,6 +151,7 @@ export default function App() {
 		>
 			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
 			<Tab.Screen name="Admin Movie" component={ViewAllMoviesAdmin} />
+			<Tab.Screen name="Movie" component={ViewAllMovieUser} />
 		</Tab.Navigator>
 	);
 	return (
@@ -163,9 +169,10 @@ export default function App() {
 				<Stack.Screen name="ledit" component={EditList} />
 				<Stack.Screen name="myreview" component={UserPostsList} />
 				<Stack.Screen name="onereview" component={Review} />
-
 				<Stack.Screen name="reviewadd" component={ReviewAdd} />
 				<Stack.Screen name="viewOneMovie" component={ViewOneMovieAdmin} />
+				<Stack.Screen name="View Movie" component={ViewOneMovieUser} />
+				{/*  // user view */}
 				<Stack.Screen name="Admin Add Movie" component={AddMovieAdmin} />
 				<Stack.Screen name="Admin Edit Movie" component={EditMovieAdmin} />
 			</Stack.Navigator>

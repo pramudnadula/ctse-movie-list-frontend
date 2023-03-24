@@ -5,7 +5,7 @@ import { Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
-const OneMovie = ({ movie, isAdmin }) => {
+const OneMovieUser = ({ movie }) => {
 	const genres = [
 		{ name: 'Action', color: '#FF5733' },
 		{ name: 'Comedy', color: '#FFC300' },
@@ -51,7 +51,7 @@ const OneMovie = ({ movie, isAdmin }) => {
 	};
 	const navigation = useNavigation();
 	const gotoviewpage = (id) => {
-		navigation.navigate('viewOneMovie', { mid: id });
+		navigation.navigate('View Movie', { mid: id });
 	};
 
 	return (
@@ -82,6 +82,7 @@ const OneMovie = ({ movie, isAdmin }) => {
 							  (movie?.title).replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
 							: 'No Title'}
 					</Text>
+
 					<Text
 						style={{
 							color: 'white',
@@ -137,33 +138,32 @@ const OneMovie = ({ movie, isAdmin }) => {
 							? Math.floor(movie?.duration / 60) + 'h ' + (movie?.duration % 60) + 'm'
 							: 'No Duration'}
 					</Text>
-					{!isAdmin && (
-						<TouchableOpacity
+
+					<TouchableOpacity
+						style={{
+							backgroundColor: wishList ? 'red' : 'black',
+							width: 40,
+							height: 50,
+							padding: 4.5,
+							borderTopEndRadius: 10,
+							borderTopStartRadius: 10,
+							justifyContent: 'center',
+							alignItems: 'center',
+							position: 'absolute',
+							right: 0,
+							bottom: 0,
+						}}
+						onPress={() => handleWishList(movie?.id, !wishList)}
+					>
+						<Ionicons
 							style={{
-								backgroundColor: wishList ? 'red' : 'black',
-								width: 40,
-								height: 50,
-								padding: 4.5,
-								borderTopEndRadius: 10,
-								borderTopStartRadius: 10,
-								justifyContent: 'center',
-								alignItems: 'center',
-								position: 'absolute',
-								right: 0,
-								bottom: 0,
+								color: 'white',
 							}}
-							onPress={() => handleWishList(movie?.id, !wishList)}
-						>
-							<Ionicons
-								style={{
-									color: 'white',
-								}}
-								name="heart"
-								size={32}
-								color="black"
-							/>
-						</TouchableOpacity>
-					)}
+							name="heart"
+							size={32}
+							color="black"
+						/>
+					</TouchableOpacity>
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -196,4 +196,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default OneMovie;
+export default OneMovieUser;
