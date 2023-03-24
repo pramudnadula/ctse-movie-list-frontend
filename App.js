@@ -28,7 +28,6 @@ import AllList from './src/features/userMovie/pages/AllList';
 import EditList from './src/features/userMovie/pages/EditList';
 import AddMovieAdmin from './src/features/admin_movie/pages/AddMovieAdmin';
 import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAdmin';
-import FlashMessage from 'react-native-flash-message';
 import Toast from 'react-native-toast-message';
 import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
 import EditMovieAdmin from './src/features/admin_movie/pages/EditMovieAdmin';
@@ -175,7 +174,6 @@ export default function App() {
 				<Stack.Screen name="Admin Add Movie" component={AddMovieAdmin} />
 				<Stack.Screen name="Admin Edit Movie" component={EditMovieAdmin} />
 			</Stack.Navigator>
-			<FlashMessage ref={ref} />
 			<Toast />
 		</NavigationContainer>
 	);
