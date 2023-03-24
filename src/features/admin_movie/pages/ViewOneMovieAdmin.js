@@ -1,18 +1,24 @@
 import { useRoute } from '@react-navigation/core';
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, collection, deleteDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 const ViewOneMovieAdmin = () => {
 	const db = getFirestore();
 	const store = getStorage();
 	const route = useRoute();
-	const { pid } = route.params;
-	console.log(pid);
+	const { mid } = route.params;
+	console.log(mid);
+
+	const navigation = useNavigation();
+	const goEditPage = (id) => {
+		navigation.navigate('Admin Edit Movie', { mid: id });
+	};
 
 	const genres = [
 		{ name: 'Action', color: '#FF5733' },
@@ -40,7 +46,7 @@ const ViewOneMovieAdmin = () => {
 	const fetchMovieData = async () => {
 		try {
 			setLoading(true);
-			const movieRef = doc(db, 'AdminMovies', pid);
+			const movieRef = doc(db, 'AdminMovies', mid);
 			const movieSnapshot = await getDoc(movieRef);
 			if (movieSnapshot.exists()) {
 				setMovieData(movieSnapshot.data());
@@ -57,7 +63,7 @@ const ViewOneMovieAdmin = () => {
 
 	useEffect(() => {
 		fetchMovieData();
-	}, [db, pid]);
+	}, [db, mid]);
 
 	const handleWishList = (id, wishList) => {
 		setWishList(wishList);
@@ -127,9 +133,50 @@ const ViewOneMovieAdmin = () => {
 			return <Text style={{ color: 'white', fontSize: 16 }}>No description</Text>;
 		}
 	};
+
+	//! Delete Movie
+	const handleDelete = () => {
+		Alert.alert(
+			'Delete Movie',
+			'Are you sure you want to delete this movie?',
+			[
+				{
+					text: 'Cancel',
+					style: 'cancel',
+				},
+				{
+					text: 'OK',
+					onPress: () => {
+						// delete movie from Firebase
+						const db = getFirestore();
+						const storage = getStorage();
+						const moviesRef = collection(db, 'AdminMovies');
+						const movieId = mid; // get the movie ID from the route params
+						// Delete the movie document with the given ID
+						deleteDoc(doc(moviesRef, movieId))
+							.then(() => {
+								console.log('Document successfully deleted!');
+								Toast.show({
+									type: 'success', // success, error, info
+									text1: 'Deleted Successfully',
+									topOffset: 100,
+									visibilityTime: 1500, // if don't set this, it calls the default
+									text2: 'Movie Deleted Successfully ✅',
+								});
+								navigation.navigate('Admin Movie');
+							})
+							.catch((error) => {
+								console.error('Error deleting document: ', error);
+							});
+					},
+				},
+			],
+			{ cancelable: false }
+		);
+	};
+
 	return (
 		<>
-			{console.log(movieData)}
 			{loading ? (
 				<View style={styles.containerLoading}>
 					<ActivityIndicator size="large" color="#0000ff" />
@@ -173,6 +220,44 @@ const ViewOneMovieAdmin = () => {
 											: 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg',
 									}}
 								/>
+								<TouchableOpacity
+									style={{
+										justifyContent: 'center',
+										alignItems: 'center',
+										position: 'absolute',
+										right: 15,
+										top: 20,
+									}}
+									onPress={() => handleDelete()}
+								>
+									<Ionicons
+										style={{
+											color: '#950000',
+										}}
+										name="trash"
+										size={40}
+										color="black"
+									/>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={{
+										justifyContent: 'center',
+										alignItems: 'center',
+										position: 'absolute',
+										right: 15,
+										top: 80,
+									}}
+									onPress={() => navigation.navigate('Admin Edit Movie', { mid: mid })}
+								>
+									<Ionicons
+										style={{
+											color: 'green',
+										}}
+										name="create"
+										size={40}
+										color="black"
+									/>
+								</TouchableOpacity>
 
 								<TouchableOpacity
 									style={{
