@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import Loading from '../components/Loading';
+import Toast from 'react-native-toast-message'
 export default function ReviewEdit() {
     const route = useRoute();
     const { pid } = route.params;
@@ -200,13 +201,16 @@ export default function ReviewEdit() {
         const db = getFirestore();
         const docRef = doc(db, "review", post.id);
         await updateDoc(docRef, ob);
-        showMessage({
-            message: "Document updated successfully!",
-            type: "success",
+        Toast.show({
+            type: 'success',
+            text1: 'Post Updated Successfully',
+            topOffset: 100,
+            visibilityTime: 1500,
+
         });
-        setTimeout(() => {
-            navigation.navigate('my')
-        }, 1000);
+
+        navigation.navigate('myreview')
+
 
 
     };

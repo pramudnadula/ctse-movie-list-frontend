@@ -7,7 +7,7 @@ import { getFirestore, collection, getDocs, getDoc, doc, addDoc, serverTimestamp
 import { getAuth } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native';
 
-const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
+const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, openModal2 }) => {
     const navigation = useNavigation();
     const [comments, setcomments] = useState([])
     const [comment, setComment] = useState('');
@@ -16,7 +16,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
         setIsCommentModalVisible(true)
     }
     const gotoviewpage = () => {
-        navigation.navigate('one', { pid: post.id })
+        navigation.navigate('onereview', { pid: post.id })
     }
 
 
@@ -142,42 +142,45 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
             </MainRow>
 
             <PostText>
-                <Text style={{ color: 'white' }}>{post.title}</Text>
+                <Text style={{ color: 'white', fontStyle: 'italic' }}>"{post.title}"</Text>
 
             </PostText>
 
             {
                 post.type === 3 ? <>
+                    <TouchableOpacity onPress={() => openModal([post.img1, post.img2, post.img3, post.img4])}>
+                        <ImageBox>
+                            <ImageBoxContent2>
+                                <Image2 source={{ uri: post.img1 }} />
+                                <Image2 source={{ uri: post.img2 }} />
+                            </ImageBoxContent2>
 
-                    <ImageBox>
-                        <ImageBoxContent2>
-                            <Image2 source={{ uri: post.img1 }} />
-                            <Image2 source={{ uri: post.img2 }} />
-                        </ImageBoxContent2>
+                            <ImageBoxContent2>
 
-                        <ImageBoxContent2>
+                                <Image2 source={{ uri: post.img3 }} />
+                                <Image2 source={{ uri: post.img4 }} />
+                            </ImageBoxContent2>
 
-                            <Image2 source={{ uri: post.img3 }} />
-                            <Image2 source={{ uri: post.img4 }} />
-                        </ImageBoxContent2>
-
-                    </ImageBox>
+                        </ImageBox>
+                    </TouchableOpacity>
                 </> : <></>
             }
             {
                 post.type == 2 ? <>
+                    <TouchableOpacity onPress={() => openModal([post.img1, post.img2, post.img3])}>
+                        <ImageBox >
+                            <ImageBoxContent1>
+                                <Image1 source={{ uri: post.img1 }} />
+                            </ImageBoxContent1>
 
-                    <ImageBox>
-                        <ImageBoxContent1>
-                            <Image1 source={{ uri: post.img1 }} />
-                        </ImageBoxContent1>
 
-                        <ImageBoxContent2>
-                            <Image2 source={{ uri: post.img2 }} />
-                            <Image2 source={{ uri: post.img3 }} />
-                        </ImageBoxContent2>
+                            <ImageBoxContent2>
+                                <Image2 source={{ uri: post.img2 }} />
+                                <Image2 source={{ uri: post.img3 }} />
+                            </ImageBoxContent2>
 
-                    </ImageBox>
+                        </ImageBox>
+                    </TouchableOpacity>
                 </> : <>
 
                 </>
@@ -185,9 +188,11 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
 
             {
                 post.type === 1 ? <>
-                    <ImageBox>
-                        <PostImg source={{ uri: post.img1 }} />
-                    </ImageBox>
+                    <TouchableOpacity onPress={() => openModal([post.img1])}>
+                        <ImageBox>
+                            <PostImg source={{ uri: post.img1 }} />
+                        </ImageBox>
+                    </TouchableOpacity>
                 </> : <></>
             }
             <View style={styles.postFooter}>
@@ -205,9 +210,9 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare }) => {
                         <MaterialIcons name="chat-bubble-outline" size={24} color="#fb5b5a" />
                         <Text style={styles.iconText}>Comment</Text>
                     </TouchableOpacity></> : <></>}
-                <TouchableOpacity onPress={onPressShare} style={styles.iconContainer}>
-                    <MaterialIcons name="share" size={24} color="#fb5b5a" />
-                    <Text style={styles.iconText}>Share</Text>
+                <TouchableOpacity onPress={() => openModal2(post.vid)} style={styles.iconContainer} >
+                    <MaterialIcons name="music-video" size={24} color="#fb5b5a" />
+                    <Text style={styles.iconText}>Trailer</Text>
                 </TouchableOpacity>
             </View>
 

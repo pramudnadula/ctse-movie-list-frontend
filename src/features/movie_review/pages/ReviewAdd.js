@@ -13,8 +13,10 @@ import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import Loading from '../components/Loading';
 import FloatingButton from '../components/FloatingButton';
-
+import Toast from 'react-native-toast-message';
+import { useNavigation } from '@react-navigation/native';
 export default function ReviewAdd() {
+    const navigation = useNavigation();
     const [title, setTitle] = useState('');
     const [type, setType] = useState(1);
     const [mname, setmname] = useState('');
@@ -41,6 +43,15 @@ export default function ReviewAdd() {
     const toggleSwitch2 = () => setIsEnabled2(previousState => !previousState);
     const selectedone = (value) => {
         setrate(value);
+    }
+    const getVideoId = (url) => {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2]) {
+            return match[2];
+        } else {
+            return null;
+        }
     }
     const validate = () => {
         if (title === '') {
@@ -145,7 +156,7 @@ export default function ReviewAdd() {
             img3,
             img4,
             type,
-            vlink,
+            vlink: getVideoId(vlink),
             rate,
             comment: isEnabled2,
             like: isEnabled1,
@@ -156,7 +167,14 @@ export default function ReviewAdd() {
         const db = getFirestore();
         try {
             const docRef = await addDoc(collection(db, 'review'), ob);
-            console.log('Document written with ID: ', docRef.id);
+            Toast.show({
+                type: 'success',
+                text1: 'Post Added Successfully',
+                topOffset: 100,
+                visibilityTime: 1500,
+
+            });
+            navigation.navigate('Review')
         } catch (e) {
             console.error('Error adding document: ', e);
         }
@@ -267,7 +285,7 @@ export default function ReviewAdd() {
                         numberOfLines={5}
                     />
                     {!isValiddes && <Text style={styles.errorText}>Please enter a valid description</Text>}
-                    <Text style={styles.label}>Video Link:</Text>
+                    <Text style={styles.label}>Trailer Link:</Text>
                     <TextInput
                         style={[styles.textArea, !isValidvlink && styles.invalidInput]}
                         value={vlink}

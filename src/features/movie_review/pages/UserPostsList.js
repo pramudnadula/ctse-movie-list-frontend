@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native';
-
+import Toast from 'react-native-toast-message';
 import {
     FlatList,
     View,
@@ -65,6 +65,13 @@ const UserPostsList = () => {
             .then(() => {
                 console.log("Document successfully deleted!");
                 setModalVisible(false)
+                Toast.show({
+                    type: 'success',
+                    text1: 'Post Deleted Successfully',
+                    topOffset: 100,
+                    visibilityTime: 1500,
+
+                });
                 loadData()
             })
             .catch((error) => {
