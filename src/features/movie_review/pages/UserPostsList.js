@@ -27,7 +27,7 @@ const UserPostsList = () => {
 	const loadData = async () => {
 		setloading(true);
 		const reviewsRef = collection(db, 'review');
-		const querySnapshot = await getDocs(query(reviewsRef, where('uid', '==', 'xX4OtaV4j5fLIE1k2cL7l4igkeN2')));
+		const querySnapshot = await getDocs(query(reviewsRef, where('uid', '==', getAuth().currentUser.uid)));
 		const reviews = [];
 		querySnapshot.forEach((doc) => {
 			const review = doc.data();

@@ -4,9 +4,9 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 const Comments = ({ avatarUrl, com }) => {
 	return (
 		<View style={styles.comment}>
-			<Image style={styles.avatar} source={{ uri: 'https://picsum.photos/id/10/50/50' }} />
+			<Image style={styles.avatar} source={{ uri: com.pic }} />
 			<View style={styles.commentContent}>
-				<Text style={styles.commentUsername}>{com.uid}</Text>
+				<Text style={styles.commentUsername}>{com.uname}</Text>
 				<Text style={styles.commentText}>{com.text}</Text>
 			</View>
 		</View>

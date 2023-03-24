@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { Ionicons } from '@expo/vector-icons';
 import {
     Modal,
@@ -41,7 +42,7 @@ export default AllList = () => {
     const loadData = async () => {
         let firstDoc = {}
         const db = getFirestore()
-        const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'//firebase.auth().currentUser.uid;
+        const userId = getAuth().currentUser.uid;
         const movieRef = collection(db, 'userMovie');
         const querySnapshot = await getDocs(query(movieRef, where('uid', '==', userId)));
         if (!querySnapshot.empty) {

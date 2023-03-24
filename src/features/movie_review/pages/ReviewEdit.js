@@ -451,7 +451,7 @@ export default function ReviewEdit() {
 							<StarRating
 								disabled={false}
 								maxStars={5}
-								rating={rate}
+								rating={Number(rate)}
 								selectedStar={(rating) => setrate(rating)}
 								fullStarColor="#fb5b5a"
 								starSize={40}
