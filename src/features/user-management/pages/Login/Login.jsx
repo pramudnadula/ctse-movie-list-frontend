@@ -3,8 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import { KeyboardAvoidingView } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const style = StyleSheet.create({
   container: {
@@ -58,46 +57,58 @@ function Login() {
   const handleLogin = async () => {
     try {
       if (email === '') {
-        showMessage({
-          message: "Email Field can't be empty",
-          type: 'warning',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Email Field can't be empty",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
         return;
       }
       if (password === '') {
-        showMessage({
-          message: "Password Field can't be empty",
-          type: 'warning',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Password Field can't be empty",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
         return;
       }
 
-      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-      await AsyncStorage.setItem('uid', userCredentials.user.uid);
-      showMessage({
-        message: 'Logged in Successfully',
-        type: 'success',
+      await signInWithEmailAndPassword(auth, email, password);
+
+      Toast.show({
+        type: 'success', // success, error, info
+        text1: 'Logged in Successfully',
+        topOffset: 100,
+        visibilityTime: 1500, // if don't set this, it calls the default
       });
 
       setTimeout(function () {
-        navigation.navigate('home');
+        navigation.navigate('users');
       }, 1500);
     } catch (err) {
       console.log(err.code);
       if (err.code === 'auth/wrong-password') {
-        showMessage({
-          message: 'Invalid Password.',
-          type: 'danger',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Invalid Password.",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
       } else if (err.code === 'auth/user-not-found') {
-        showMessage({
-          message: 'User not found.',
-          type: 'danger',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "User not found.",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
       } else if (err.code === 'auth/invalid-email') {
-        showMessage({
-          message: 'Invalid Email.',
-          type: 'danger',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Invalid Email.",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
       }
     }

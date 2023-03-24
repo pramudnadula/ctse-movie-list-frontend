@@ -2,11 +2,13 @@ import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import { View, TextInput, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { getDownloadURL, getStorage, uploadBytes } from '@firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytes } from '@firebase/storage';
 import { getFirestore, doc, setDoc } from '@firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
-import { showMessage } from 'react-native-flash-message';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { CheckBox } from '@rneui/themed';
+import { Stack } from 'react-native-flex-layout';
 
 const style = StyleSheet.create({
   scrollView: {
@@ -50,6 +52,9 @@ const style = StyleSheet.create({
   loginText: {
     color: '#fff',
   },
+  checkboxView: {
+    display: 'flex'
+  }
 });
 
 function Register() {
@@ -63,13 +68,13 @@ function Register() {
   const [tempPassword, setTempPassword] = useState('');
   const [name, setName] = useState('');
   const [country, setCountry] = useState('');
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState('male');
   const [photo, setPhoto] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleImagePicker = async () => {
     try {
+
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -97,10 +102,22 @@ function Register() {
         await uploadBytes(imageRef, blob);
         const imageUrl = await getDownloadURL(imageRef);
         setPhoto(imageUrl);
+        Toast.show({
+          type: 'success', // success, error, info
+          text1: "Image Uploaded Successfully",
+          topOffset: 100,
+          visibilityTime: 1000, // if don't set this, it calls the default
+        });
         setLoading(false);
       }
     } catch (error) {
       console.log(error);
+      Toast.show({
+        type: 'error', // success, error, info
+        text1: "Something went wrong. Image not uploaded",
+        topOffset: 100,
+        visibilityTime: 1500, // if don't set this, it calls the default
+      });
     }
   };
 
@@ -111,30 +128,38 @@ function Register() {
   const handleRegister = async () => {
     try {
       if (email === '') {
-        showMessage({
-          message: "Email Field can't be empty",
-          type: 'warning',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Email Field can't be empty",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
         return;
       }
       if (password === '') {
-        showMessage({
-          message: "Password Field can't be empty",
-          type: 'warning',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Password Field can't be empty",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
         return;
       }
       if (password !== tempPassword) {
-        showMessage({
-          message: "Passwords don't match.",
-          type: 'warning',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Passwords don't match.",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
         return;
       }
       if (name === '') {
-        showMessage({
-          message: "Name Field can't be empty",
-          type: 'warning',
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: "Name Field can't be empty",
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
         });
         return;
       }
@@ -146,17 +171,47 @@ function Register() {
         gender,
         country,
         photo,
+        isAdmin: true
       };
 
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
       const userRef = doc(database, 'users', userCredentials.user.uid);
       await setDoc(userRef, userObj);
-    } catch (err) {
-      console.log(err);
-      showMessage({
-        message: 'Something went wrong.',
-        type: 'danger',
+      console.log("User Created Successfully")
+      Toast.show({
+        type: 'success', // success, error, info
+        text1: 'User Created Successfully',
+        topOffset: 100,
+        visibilityTime: 1500, // if don't set this, it calls the default
       });
+      setTimeout(function () {
+        navigation.navigate('login');
+      }, 1500);
+
+    } catch (err) {
+      console.log(err.code);
+      if (err.code === 'auth/email-already-in-use') {
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: 'Email already in use.',
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
+        });
+      } else if (err.code === 'auth/weak-password') {
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: 'Weak Password. Need atleast 6 characters.',
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
+        });
+      } else {
+        Toast.show({
+          type: 'error', // success, error, info
+          text1: 'Something went wrong',
+          topOffset: 100,
+          visibilityTime: 1500, // if don't set this, it calls the default
+        });
+      }
     }
   };
 
@@ -199,21 +254,27 @@ function Register() {
             style={style.inputText}
           />
         </View>
-        {/* <View style={style.inputView}>
-          <Picker
-            selectedValue={gender}
-            onValueChange={(itemValue) => setGender(itemValue)}
-          >
-            <Picker.Item label="Select Gender" value="" />
-            <Picker.Item label="Male" value="Male" />
-            <Picker.Item label="Female" value="Female" />
-          </Picker>
-        </View> */}
-        {/* <View style={style.inputView}>
+        <Stack row align="center" spacing={4}>
+          <CheckBox
+            checked={gender === 'male'}
+            onPress={() => setGender('male')}
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            title="Male"
+          />
+          <CheckBox
+            checked={gender === 'female'}
+            onPress={() => setGender('female')}
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            title="Female"
+          />
+        </Stack>
+        <View style={style.inputView}>
           <TouchableOpacity onPress={handleImagePicker}>
             <Text>Image</Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
         <Text
           style={style.loginText}
           onPress={handleNavigate}

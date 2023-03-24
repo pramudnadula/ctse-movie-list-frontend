@@ -28,9 +28,9 @@ import AllList from './src/features/userMovie/pages/AllList';
 import EditList from './src/features/userMovie/pages/EditList';
 import AddMovieAdmin from './src/features/admin_movie/pages/AddMovieAdmin';
 import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAdmin';
-import FlashMessage from 'react-native-flash-message';
 import Toast from 'react-native-toast-message';
 import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
+import UserList from './src/features/user-management/pages/UserList/UserList';
 
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
@@ -165,6 +165,7 @@ export default function App() {
 			>
 				<Stack.Screen name="login" component={Login} />
 				<Stack.Screen name="register" component={Register} />
+				<Stack.Screen name='users' component={UserList} />
 				<Stack.Screen name="home" component={Tabs} />
 				<Stack.Screen name="edit" component={ReviewEdit} />
 				<Stack.Screen name="ledit" component={EditList} />
@@ -173,7 +174,6 @@ export default function App() {
 				<Stack.Screen name="viewOneMovie" component={ViewOneMovieAdmin} />
 				<Stack.Screen name="Admin Add Movie" component={AddMovieAdmin} />
 			</Stack.Navigator>
-			<FlashMessage ref={ref} />
 			<Toast />
 		</NavigationContainer>
 	);
