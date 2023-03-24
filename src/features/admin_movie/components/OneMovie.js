@@ -2,8 +2,10 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, ToastAndroid } from 'r
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
-const OneMovie = ({ post }) => {
+const OneMovie = ({ movie }) => {
 	const genres = [
 		{ name: 'Action', color: '#FF5733' },
 		{ name: 'Comedy', color: '#FFC300' },
@@ -29,118 +31,141 @@ const OneMovie = ({ post }) => {
 		setWishList(wishList);
 		console.log(id);
 		if (wishList) {
-			ToastAndroid.show('Added To WishList', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'success', // success, error, info
+				text1: 'Added To WishList',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'You can see it in your profile',
+			});
 		}
 		if (!wishList) {
-			ToastAndroid.show('Removed From WishList', ToastAndroid.SHORT);
+			Toast.show({
+				type: 'error', // success, error, info
+				text1: 'Removed From WishList',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+				text2: 'You can see it in your profile',
+			});
 		}
+	};
+	const navigation = useNavigation();
+	const gotoviewpage = (id) => {
+		navigation.navigate('viewOneMovie', { mid: id });
 	};
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.leftContainer}>
-				<Image
-					style={styles.image}
-					source={{
-						uri: post?.image1
-							? post?.image1
-							: 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg',
-					}}
-				/>
-			</View>
+		<TouchableOpacity onPress={() => gotoviewpage(movie?.id)}>
+			<View style={styles.container}>
+				<View style={styles.leftContainer}>
+					<Image
+						style={styles.image}
+						source={{
+							uri: movie?.image1
+								? movie?.image1
+								: 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg',
+						}}
+					/>
+				</View>
 
-			<View style={styles.rightContainer}>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 22,
-						fontWeight: 'bold',
-						fontFamily: 'sans-serif',
-					}}
-				>
-					{post?.title ? post?.title : 'No Title'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						backgroundColor: genres.find((genre) => genre.name === post?.genre)?.color,
-						padding: 5,
-						width: 100,
-						borderRadius: 5,
-						fontSize: 16,
-						fontWeight: 'bold',
-					}}
-				>
-					{post?.genre}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 16,
-						height: 24,
-						width: '100%',
-					}}
-				>
-					{post?.description ? post?.description : 'No Description'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 12,
-					}}
-				>
-					{post?.year ? `Release Date: ${post?.year}` : 'No Release Date : Still in Production'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 12,
-					}}
-				>
-					{post?.rate
-						? (post?.rate == 1 && '⭐') ||
-						  (post?.rate == 2 && '⭐⭐') ||
-						  (post?.rate == 3 && '⭐⭐⭐') ||
-						  (post?.rate == 4 && '⭐⭐⭐⭐') ||
-						  (post?.rate == 5 && '⭐⭐⭐⭐⭐')
-						: 'No Rating'}
-				</Text>
-				<Text
-					style={{
-						color: 'white',
-						fontSize: 12,
-					}}
-				>
-					{post?.duration
-						? Math.floor(post?.duration / 60) + 'h ' + (post?.duration % 60) + 'm'
-						: 'No Duration'}
-				</Text>
-				<TouchableOpacity
-					style={{
-						backgroundColor: wishList ? 'red' : 'black',
-						width: 35,
-						height: 45,
-						borderBottomEndRadius: 10,
-						borderBottomStartRadius: 10,
-						justifyContent: 'center',
-						alignItems: 'center',
-						position: 'absolute',
-						right: 0,
-						bottom: 0,
-					}}
-					onPress={() => handleWishList(post?.id, !wishList)}
-				>
-					<Ionicons
+				<View style={styles.rightContainer}>
+					<Text
 						style={{
 							color: 'white',
+							fontSize: 22,
+							fontWeight: 'bold',
+							fontFamily: 'sans-serif',
 						}}
-						name="heart"
-						size={32}
-						color="black"
-					/>
-				</TouchableOpacity>
+					>
+						{movie?.title
+							? // first letter of title to uppercase and rest to lowercase every word
+							  (movie?.title).replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
+							: 'No Title'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							backgroundColor: genres.find((genre) => genre.name === movie?.genre)?.color,
+							padding: 5,
+							width: 100,
+							borderRadius: 5,
+							fontSize: 16,
+							fontWeight: 'bold',
+						}}
+					>
+						{movie?.genre}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 16,
+							height: 24,
+							width: '100%',
+						}}
+					>
+						{movie?.description ? movie?.description : 'No Description'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 12,
+						}}
+					>
+						{movie?.year ? `Release Date: ${movie?.year}` : 'No Release Date : Still in Production'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 12,
+						}}
+					>
+						{movie?.rate
+							? (movie?.rate == 1 && '⭐') ||
+							  (movie?.rate == 2 && '⭐⭐') ||
+							  (movie?.rate == 3 && '⭐⭐⭐') ||
+							  (movie?.rate == 4 && '⭐⭐⭐⭐') ||
+							  (movie?.rate == 5 && '⭐⭐⭐⭐⭐')
+							: 'No Rating'}
+					</Text>
+					<Text
+						style={{
+							color: 'white',
+							fontSize: 12,
+						}}
+					>
+						{movie?.duration
+							? Math.floor(movie?.duration / 60) + 'h ' + (movie?.duration % 60) + 'm'
+							: 'No Duration'}
+					</Text>
+
+					<TouchableOpacity
+						style={{
+							backgroundColor: wishList ? 'red' : 'black',
+							width: 40,
+							height: 50,
+							padding: 4.5,
+							borderTopEndRadius: 10,
+							borderTopStartRadius: 10,
+							justifyContent: 'center',
+							alignItems: 'center',
+							position: 'absolute',
+							right: 0,
+							bottom: 0,
+						}}
+						onPress={() => handleWishList(movie?.id, !wishList)}
+					>
+						<Ionicons
+							style={{
+								color: 'white',
+							}}
+							name="heart"
+							size={32}
+							color="black"
+						/>
+					</TouchableOpacity>
+				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 

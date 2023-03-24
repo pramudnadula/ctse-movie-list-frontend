@@ -3,11 +3,12 @@ import { StyleSheet, View, Text, Image, FlatList, TextInput } from 'react-native
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import OneMovie from '../components/OneMovie';
+import FloatingButton from '../components/FloatingButton';
 
 const ViewAllMoviesAdmin = () => {
 	const db = getFirestore();
 	const store = getStorage();
-	const [posts, setPosts] = useState([]);
+	const [movies, setMovies] = useState([]);
 	//   const [searchTitle, setSearchTitle] = useState("");
 	//   const [searchDescription, setSearchDescription] = useState("");
 	const [searchQuery, setSearchQuery] = useState('');
@@ -28,12 +29,12 @@ const ViewAllMoviesAdmin = () => {
 			movie.id = doc.id;
 			movies.push(movie);
 		});
-		setPosts(movies);
+		setMovies(movies);
 	};
 
 	useEffect(() => {
 		loadData();
-	}, [searchQuery]);
+	}, [searchQuery, db]);
 
 	const handleSearch = (text) => {
 		setSearchQuery(text);
@@ -48,10 +49,11 @@ const ViewAllMoviesAdmin = () => {
 				value={searchQuery}
 			/>
 			<FlatList
-				data={posts}
-				keyExtractor={(post) => post.id.toString()}
-				renderItem={({ item }) => <OneMovie post={item} />}
+				data={movies}
+				keyExtractor={(movie) => movie.id.toString()}
+				renderItem={({ item }) => <OneMovie movie={item} />}
 			/>
+			<FloatingButton />
 		</View>
 	);
 };
