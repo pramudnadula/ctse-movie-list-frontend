@@ -12,6 +12,7 @@ import FloatingButton from '../components/FloatingButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImageSliderModal from '../components/ImageSliderModal';
 import VideoModal from '../components/VideoModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReviewList = () => {
 	const navigation = useNavigation();
@@ -44,7 +45,7 @@ const ReviewList = () => {
 		setModalVisible2(false);
 		setvid('');
 	};
-	const handleSearch = () => {};
+	const handleSearch = () => { };
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {
@@ -69,6 +70,7 @@ const ReviewList = () => {
 	};
 
 	const loadData = async () => {
+		console.log(await AsyncStorage.getItem('isAdmin'))
 		setloading(true);
 		setposter(false);
 		const reviewsRef = collection(db, 'review');
