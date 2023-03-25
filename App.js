@@ -28,19 +28,17 @@ import AddList from './src/features/userMovie/pages/AddList';
 import AllList from './src/features/userMovie/pages/AllList';
 import EditList from './src/features/userMovie/pages/EditList';
 import AddMovieAdmin from './src/features/admin_movie/pages/AddMovieAdmin';
-import ViewAllMoviesAdmin from './src/features/admin_movie/pages/ViewAllMoviesAdmin';
 import Toast from 'react-native-toast-message';
 import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmin';
 import EditMovieAdmin from './src/features/admin_movie/pages/EditMovieAdmin';
-import ViewAllMovieUser from './src/features/admin_movie/pages/ViewAllMovieUser';
 import ViewOneMovieUser from './src/features/admin_movie/pages/ViewOneMovieUser';
 import CreateUser from './src/features/user-management/pages/CreateUser.jsx/CreateUser';
 import EditUser from './src/features/user-management/pages/EditUser.jsx/EditUser';
+import Movies from './src/features/admin_movie/pages/Movies';
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
 const LogoutIcon = () => <Ionicons name="ios-log-out" size={23} color="white" />;
 // const User = () => <Ionicons name="person-outline"></Ionicons>;
-
 
 const KebabMenu = ({ navigation }) => {
 	const [menuVisible, setMenuVisible] = useState(false);
@@ -130,9 +128,6 @@ export default function App() {
 					} else if (route.name === 'Review') {
 						iconName = focused ? 'profile' : 'profile';
 						return <AntDesign name={iconName} size={size} color={color} />;
-					} else if (route.name === 'Admin Movie') {
-						iconName = focused ? 'movie' : 'movie-outline';
-						return <MaterialCommunityIcons name={iconName} size={24} color={color} />;
 					} else if (route.name === 'Movie') {
 						iconName = focused ? 'movie' : 'movie-outline';
 						return <MaterialCommunityIcons name={iconName} size={24} color={color} />;
@@ -159,13 +154,11 @@ export default function App() {
 			}}
 		>
 			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
-			<Tab.Screen name="Admin Movie" component={ViewAllMoviesAdmin} />
-			<Tab.Screen name="Movie" component={ViewAllMovieUser} />
+			<Tab.Screen name="Movie" component={Movies} />
 
 			<Tab.Screen name="User" component={Users} />
 
 			<Tab.Screen name="My Movie" component={AllList} />
-
 		</Tab.Navigator>
 	);
 	return (
@@ -193,6 +186,7 @@ export default function App() {
 				{/*  // user view */}
 				<Stack.Screen name="Admin Add Movie" component={AddMovieAdmin} />
 				<Stack.Screen name="Admin Edit Movie" component={EditMovieAdmin} />
+				<Stack.Screen name="Movie" component={Movies} />
 			</Stack.Navigator>
 			<Toast />
 		</NavigationContainer>
