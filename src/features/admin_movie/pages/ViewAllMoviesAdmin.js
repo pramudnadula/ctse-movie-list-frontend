@@ -6,16 +6,34 @@ import OneMovie from '../components/OneMovie';
 import FloatingButton from '../components/FloatingButton';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
 const ViewAllMoviesAdmin = () => {
+	const genres = [
+		'Action',
+		'Comedy',
+		'Drama',
+		'Horror',
+		'Science Fiction',
+		'Romance',
+		'Thriller',
+		'Animation',
+		'Adventure',
+		'Fantasy',
+		'Crime',
+		'Documentary',
+		'Musical',
+		'Mystery',
+		'War',
+		'Western',
+	];
 	const navigation = useNavigation();
 	const db = getFirestore();
 	const store = getStorage();
 	const [movies, setMovies] = useState([]);
-	//   const [searchTitle, setSearchTitle] = useState("");
-	//   const [searchDescription, setSearchDescription] = useState("");
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isAdmin, setIsAdmin] = useState(false);
+	const [genre, setGenre] = useState('');
 
 	const loadData = async () => {
 		let adminMovieRef = collection(db, 'AdminMovies');
@@ -24,6 +42,11 @@ const ViewAllMoviesAdmin = () => {
 		setIsAdmin((await AsyncStorage.getItem('isAdmin')) === 'true');
 		if (searchQuery !== '') {
 			const searchRef = query(adminMovieRef, where('title', '>=', String(searchQuery).toLowerCase()));
+			adminMovieRef = searchRef;
+		}
+
+		if (genre !== '') {
+			const searchRef = query(adminMovieRef, where('genre', '==', String(genre)));
 			adminMovieRef = searchRef;
 		}
 
@@ -38,13 +61,17 @@ const ViewAllMoviesAdmin = () => {
 	};
 
 	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
-			loadData();
-			console.log('Returning to earlier page');
-		});
+		loadData();
+	}, [searchQuery, db, genre]);
 
-		return unsubscribe;
-	}, [searchQuery, db, navigation]);
+	useEffect(() => {
+		loadData();
+		// const unsubscribe = navigation.addListener('focus', () => {
+		// 	console.log('Returning to earlier page');
+		// });
+
+		// return unsubscribe;
+	}, [navigation]);
 
 	const handleSearch = (text) => {
 		setSearchQuery(text);
@@ -53,11 +80,23 @@ const ViewAllMoviesAdmin = () => {
 		<View style={styles.container}>
 			<TextInput
 				style={styles.searchBar}
-				placeholder="Search by title or description"
+				placeholder="Search by title"
 				placeholderTextColor="#fff"
 				onChangeText={handleSearch}
 				value={searchQuery}
 			/>
+			<Picker
+				selectedValue={genre}
+				style={styles.searchBar}
+				placeholder="Genre"
+				placeholderTextColor="#B3B3B3"
+				onValueChange={(itemValue, itemIndex) => setGenre(itemValue)}
+			>
+				<Picker.Item label="Filter by Genre" value="" />
+				{genres.map((item, index) => {
+					return <Picker.Item label={item} value={item} key={index} />;
+				})}
+			</Picker>
 			<FlatList
 				data={movies}
 				keyExtractor={(movie) => movie.id.toString()}
@@ -77,11 +116,13 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	searchBar: {
-		backgroundColor: '#333',
+		backgroundColor: '#555',
+		borderRadius: 8,
+		margin: 5,
 		color: '#fff',
-		padding: 10,
-		margin: 10,
-		borderRadius: 10,
+		fontSize: 16,
+		paddingHorizontal: 16,
+		paddingVertical: 8,
 	},
 });
 export default ViewAllMoviesAdmin;

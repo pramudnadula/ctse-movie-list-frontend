@@ -1,4 +1,3 @@
-import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import { View, TextInput, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -8,7 +7,7 @@ import { useNavigation } from '@react-navigation/core';
 import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { CheckBox } from '@rneui/themed';
-import { Stack } from 'react-native-flex-layout';
+import { CheckBoxContainer } from '../../styles/EditUser.style';
 
 const style = StyleSheet.create({
 	scrollView: {
@@ -55,12 +54,16 @@ const style = StyleSheet.create({
 	checkboxView: {
 		display: 'flex',
 	},
+	imageText: {
+		marginTop: -5
+	}
 });
 
 function Register() {
 	const navigation = useNavigation();
 	const auth = getAuth();
 	const database = getFirestore();
+	const storage = getStorage();
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -69,7 +72,7 @@ function Register() {
 	const [country, setCountry] = useState('');
 	const [gender, setGender] = useState('male');
 	const [photo, setPhoto] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [imageState, setImageState] = useState('Upload Image');
 
 	const handleImagePicker = async () => {
 		try {
@@ -78,11 +81,10 @@ function Register() {
 				allowsEditing: true,
 				quality: 1,
 			});
-			setLoading(true);
 
 			if (!result.canceled) {
-				const storage = getStorage();
 				const imageRef = ref(storage, `users/${Date.now()}.jpg`);
+				setImageState('Uploading Image');
 				const blob = await new Promise((resolve, reject) => {
 					const xhr = new XMLHttpRequest();
 					xhr.onload = () => {
@@ -100,13 +102,13 @@ function Register() {
 				await uploadBytes(imageRef, blob);
 				const imageUrl = await getDownloadURL(imageRef);
 				setPhoto(imageUrl);
+				setImageState('Uploaded. Tap to upload different image.');
 				Toast.show({
 					type: 'success', // success, error, info
 					text1: 'Image Uploaded Successfully',
 					topOffset: 100,
 					visibilityTime: 1000, // if don't set this, it calls the default
 				});
-				setLoading(false);
 			}
 		} catch (error) {
 			console.log(error);
@@ -169,7 +171,7 @@ function Register() {
 				gender,
 				country,
 				photo,
-				isAdmin: true,
+				isAdmin: false,
 			};
 
 			const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
@@ -251,7 +253,7 @@ function Register() {
 						style={style.inputText}
 					/>
 				</View>
-				<Stack row align="center" spacing={4}>
+				<CheckBoxContainer>
 					<CheckBox
 						checked={gender === 'male'}
 						onPress={() => setGender('male')}
@@ -266,10 +268,10 @@ function Register() {
 						uncheckedIcon="circle-o"
 						title="Female"
 					/>
-				</Stack>
+				</CheckBoxContainer>
 				<View style={style.inputView}>
 					<TouchableOpacity onPress={handleImagePicker}>
-						<Text>Image</Text>
+						<Text style={style.imageText}>{imageState}</Text>
 					</TouchableOpacity>
 				</View>
 				<Text style={style.loginText} onPress={handleNavigate}>
