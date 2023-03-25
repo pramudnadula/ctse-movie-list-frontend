@@ -35,6 +35,7 @@ import ViewOneMovieUser from './src/features/admin_movie/pages/ViewOneMovieUser'
 import CreateUser from './src/features/user-management/pages/CreateUser.jsx/CreateUser';
 import EditUser from './src/features/user-management/pages/EditUser.jsx/EditUser';
 import Movies from './src/features/admin_movie/pages/Movies';
+import SplashScreen from './src/common/SplashScreen';
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
 const LogoutIcon = () => <Ionicons name="ios-log-out" size={23} color="white" />;
@@ -169,7 +170,10 @@ export default function App() {
 					headerShown: route.name !== 'login' && route.name !== 'register',
 					headerRight: () => <KebabMenu />,
 				})}
+				initialRouteName="SplashScreen"
+				headerMode="none"
 			>
+				<Stack.Screen name="SplashScreen" component={SplashScreen} />
 				<Stack.Screen name="login" component={Login} />
 				<Stack.Screen name="register" component={Register} />
 				<Stack.Screen name="users" component={Users} />
