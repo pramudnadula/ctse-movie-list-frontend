@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Image, ScrollView } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { useRoute } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 import {
 	getFirestore,
 	collection,
@@ -78,7 +79,13 @@ const EditList = () => {
 		};
 		const docRef = doc(collection(db, `userMovie/${did}/list`), pid);
 		updateDoc(docRef, ob);
-		navigation.navigate('listone');
+		Toast.show({
+			type: 'success',
+			text1: ' List Updated Successfully',
+			topOffset: 100,
+			visibilityTime: 1500,
+		});
+		navigation.navigate('My Movie');
 	};
 
 	const onDateChange = (date) => {
