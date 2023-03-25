@@ -63,17 +63,25 @@ export default AllList = () => {
             setdocid(firstDoc.id)
 
         }
+        //console.log(firstDoc.id)
+
         const querySnapshots = await getDocs(collection(db, `userMovie/${firstDoc.id}/list`));
+        console.log(querySnapshots)
         let movs = []
         querySnapshots.forEach((snap) => {
+            console.log(snap.data())
             let ir = snap.data()
             ir.id = snap.id
-            const jsDate = ir.date.toDate();
-            ir.date = jsDate.toLocaleDateString();
+            console.log(snap.id)
+            if (ir.date !== '') {
+                const jsDate = ir.date?.toDate();
+                ir.date = jsDate?.toLocaleDateString();
+            }
+
             movs.push(ir)
 
         })
-
+        console.log("dee")
         setMovies(movs)
 
 
@@ -82,13 +90,13 @@ export default AllList = () => {
     const renderItems = ({ item }) => (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={styles.movie}>
-                <Image style={styles.movieImage} source={{ uri: item.img }} />
+                <Image style={styles.movieImage} source={{ uri: item?.img }} />
                 <View style={styles.movieDetails}>
-                    <Text style={styles.movieTitle}>{item.mname}</Text>
-                    <Text style={styles.movieDate}>{item.date}</Text>
-                    <Text style={styles.movieComment}>{item.comment}</Text>
+                    <Text style={styles.movieTitle}>{item?.mname}</Text>
+                    <Text style={styles.movieDate}>{item?.date}</Text>
+                    <Text style={styles.movieComment}>{item?.comment}</Text>
 
-                    {item.watched ? (
+                    {item?.watched ? (
                         <View style={styles.watchedTag}>
                             <Text style={styles.tagText}>Watched</Text>
                         </View>
@@ -98,10 +106,10 @@ export default AllList = () => {
                         </View>
                     )}
                 </View>
-                <TouchableOpacity onPress={() => handleEdit(item.id)} style={{ marginRight: 8 }}>
+                <TouchableOpacity onPress={() => handleEdit(item?.id)} style={{ marginRight: 8 }}>
                     <Ionicons name="pencil-outline" size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeletes(item.id)}>
+                <TouchableOpacity onPress={() => handleDeletes(item?.id)}>
                     <Ionicons name="trash-outline" size={24} color="white" />
                 </TouchableOpacity>
             </View>
@@ -113,7 +121,7 @@ export default AllList = () => {
         <View style={styles.container}>
             <FlatList
                 data={movies}
-                keyExtractor={post => post.id.toString()}
+                keyExtractor={post => post.id}
                 renderItem={renderItems}
             />
             <Modal
