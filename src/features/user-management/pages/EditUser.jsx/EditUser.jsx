@@ -77,6 +77,7 @@ function EditUser() {
   const [gender, setGender] = useState('male');
   const [photo, setPhoto] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [imageState, setImageState] = useState('Upload Image');
 
   const handleGetUserDetails = async () => {
     try {
@@ -108,6 +109,7 @@ function EditUser() {
 
       if (!result.canceled) {
         const imageRef = ref(storage, `users/${Date.now()}.jpg`);
+        setImageState('Uploading Image');
         const blob = await new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           xhr.onload = () => {
@@ -125,6 +127,7 @@ function EditUser() {
         await uploadBytes(imageRef, blob);
         const imageUrl = await getDownloadURL(imageRef);
         setPhoto(imageUrl);
+        setImageState('Uploaded. Tap to upload different image.');
         Toast.show({
           type: 'success', // success, error, info
           text1: 'Image Uploaded Successfully',

@@ -102,7 +102,7 @@ function Register() {
 				await uploadBytes(imageRef, blob);
 				const imageUrl = await getDownloadURL(imageRef);
 				setPhoto(imageUrl);
-				setImageState('Uploaded. Tap to upload different image.')
+				setImageState('Uploaded. Tap to upload different image.');
 				Toast.show({
 					type: 'success', // success, error, info
 					text1: 'Image Uploaded Successfully',
