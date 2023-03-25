@@ -58,7 +58,7 @@ function Login() {
 	const auth = getAuth();
 	const navigation = useNavigation();
 
-	const [email, setEmail] = useState('Kavi@gmail.com');
+	const [email, setEmail] = useState('pramud@gmail.com');
 	const [password, setPassword] = useState('123456');
 
 	const handleLogin = async () => {
