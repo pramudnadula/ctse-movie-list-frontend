@@ -183,10 +183,10 @@ const ViewOneMovieAdmin = () => {
 		<>
 			{loading ? (
 				<View style={styles.containerLoading}>
-					<ActivityIndicator size="large" color="#0000ff" />
+					<ActivityIndicator size="large" color="#fb5b5a" />
 					<Text
 						style={{
-							color: '#fff',
+							color: '#fb5b5a',
 							textAlign: 'center',
 						}}
 					>
