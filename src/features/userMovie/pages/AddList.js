@@ -81,6 +81,15 @@ const AddList = () => {
 	};
 
 	const submit = async () => {
+		if (comment === '') {
+			Toast.show({
+				type: 'error',
+				text1: ' please add a comment',
+				topOffset: 100,
+				visibilityTime: 1500,
+			});
+			return
+		}
 		const db = getFirestore();
 		let firstDoc = {};
 		const userId = getAuth().currentUser.uid;

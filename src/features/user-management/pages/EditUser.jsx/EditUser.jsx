@@ -280,8 +280,10 @@ function EditUser() {
                 title="Female"
               />
             </CheckBoxContainer>
-            <View style={style.inputView} onPress={handleImagePicker}>
-              <Text style={style.imageText}>Update Image</Text>
+            <View style={style.inputView} >
+              <TouchableOpacity onPress={handleImagePicker}>
+                <Text style={style.imageText}>{imageState}</Text>
+              </TouchableOpacity>
             </View>
             <TouchableOpacity style={style.registerBtn}>
               <TouchableOpacity onPress={handleUpdateUser}>

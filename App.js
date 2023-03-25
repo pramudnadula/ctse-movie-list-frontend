@@ -153,12 +153,13 @@ export default function App() {
 				},
 			}}
 		>
-			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
-			<Tab.Screen name="Movie" component={Movies} />
 
+			<Tab.Screen name="Movie" component={Movies} />
+			<Tab.Screen name="My Movie" component={AllList} />
+			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
 			<Tab.Screen name="User" component={Users} />
 
-			<Tab.Screen name="My Movie" component={AllList} />
+
 		</Tab.Navigator>
 	);
 	return (
