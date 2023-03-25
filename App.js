@@ -126,7 +126,7 @@ export default function App() {
 
 					if (route.name === 'User') {
 						iconName = focused ? 'account' : 'account-outline';
-						return <MaterialCommunityIcons name={iconName} size={size} color="black" />;
+						return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
 					} else if (route.name === 'Review') {
 						iconName = focused ? 'profile' : 'profile';
 						return <AntDesign name={iconName} size={size} color={color} />;
@@ -181,7 +181,7 @@ export default function App() {
 				<Stack.Screen name="users" component={Users} />
 				<Stack.Screen name="admin" component={CreateUser} />
 				<Stack.Screen name="edit-user" component={EditUser} />
-				<Stack.Screen name="home" component={Tabs} />
+				<Stack.Screen name="Movie Man" component={Tabs} />
 				<Stack.Screen name="edit" component={ReviewEdit} />
 				<Stack.Screen name="listadd" component={AddList} />
 				<Stack.Screen name="ledit" component={EditList} />

@@ -56,6 +56,11 @@ const style = StyleSheet.create({
 	},
 	imageText: {
 		marginTop: -5
+	},
+	te: {
+		color: '#fb5b5a',
+		marginBottom: 90,
+		fontSize: 40
 	}
 });
 
@@ -221,6 +226,12 @@ function Register() {
 			contentInsetAdjustmentBehavior={'automatic'}
 		>
 			<View style={style.container}>
+				<View style={style.titl}>
+
+					<Text style={style.te}>
+						Register
+					</Text>
+				</View>
 				<View style={style.inputView}>
 					<TextInput placeholder="Email" value={email} onChangeText={setEmail} style={style.inputText} />
 				</View>
