@@ -30,24 +30,25 @@ const OneMovieUser = ({ movie }) => {
 	const handleWishList = (id, wishList) => {
 		setWishList(wishList);
 		console.log(id);
-		if (wishList) {
-			Toast.show({
-				type: 'success', // success, error, info
-				text1: 'Added To WishList',
-				topOffset: 100,
-				visibilityTime: 1500, // if don't set this, it calls the default
-				text2: 'You can see it in your profile',
-			});
-		}
-		if (!wishList) {
-			Toast.show({
-				type: 'error', // success, error, info
-				text1: 'Removed From WishList',
-				topOffset: 100,
-				visibilityTime: 1500, // if don't set this, it calls the default
-				text2: 'You can see it in your profile',
-			});
-		}
+		navigation.navigate('listadd', { pid: id });
+		// if (wishList) {
+		// 	Toast.show({
+		// 		type: 'success', // success, error, info
+		// 		text1: 'Added To WishList',
+		// 		topOffset: 100,
+		// 		visibilityTime: 1500, // if don't set this, it calls the default
+		// 		text2: 'You can see it in your profile',
+		// 	});
+		// }
+		// if (!wishList) {
+		// 	Toast.show({
+		// 		type: 'error', // success, error, info
+		// 		text1: 'Removed From WishList',
+		// 		topOffset: 100,
+		// 		visibilityTime: 1500, // if don't set this, it calls the default
+		// 		text2: 'You can see it in your profile',
+		// 	});
+		// }
 	};
 	const navigation = useNavigation();
 	const gotoviewpage = (id) => {
@@ -79,7 +80,7 @@ const OneMovieUser = ({ movie }) => {
 					>
 						{movie?.title
 							? // first letter of title to uppercase and rest to lowercase every word
-							  (movie?.title).replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
+							(movie?.title).replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()))
 							: 'No Title'}
 					</Text>
 
@@ -122,10 +123,10 @@ const OneMovieUser = ({ movie }) => {
 					>
 						{movie?.rate
 							? (movie?.rate == 1 && '⭐') ||
-							  (movie?.rate == 2 && '⭐⭐') ||
-							  (movie?.rate == 3 && '⭐⭐⭐') ||
-							  (movie?.rate == 4 && '⭐⭐⭐⭐') ||
-							  (movie?.rate == 5 && '⭐⭐⭐⭐⭐')
+							(movie?.rate == 2 && '⭐⭐') ||
+							(movie?.rate == 3 && '⭐⭐⭐') ||
+							(movie?.rate == 4 && '⭐⭐⭐⭐') ||
+							(movie?.rate == 5 && '⭐⭐⭐⭐⭐')
 							: 'No Rating'}
 					</Text>
 					<Text

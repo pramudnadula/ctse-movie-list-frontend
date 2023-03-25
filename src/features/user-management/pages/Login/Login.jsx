@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, collection, getDocs, query, where, addDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import { KeyboardAvoidingView } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
@@ -58,7 +58,7 @@ function Login() {
 	const auth = getAuth();
 	const navigation = useNavigation();
 
-	const [email, setEmail] = useState('Kavi@gmail.com');
+	const [email, setEmail] = useState('kavi@gmail.com');
 	const [password, setPassword] = useState('123456');
 
 	const handleLogin = async () => {
@@ -89,6 +89,14 @@ function Login() {
 			getDoc(docRef).then((docs) => {
 				storeData(docs.data().isAdmin)
 			})
+
+
+			const movieRef = collection(db, 'userMovie');
+			const querySnapshot = await getDocs(query(movieRef, where('uid', '==', getAuth().currentUser.uid)));
+			if (querySnapshot.empty) {
+				addDoc(movieRef, { uid: getAuth().currentUser.uid })
+			}
+
 
 
 			Toast.show({
