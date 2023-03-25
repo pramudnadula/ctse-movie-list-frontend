@@ -12,6 +12,7 @@ import AddMovie from './src/features/userMovie/pages/AddMovie';
 import AllMovies from './src/features/userMovie/pages/AllMovies';
 import Login from './src/features/user-management/pages/Login/Login';
 import Register from './src/features/user-management/pages/Register/Register';
+import Users from './src/features/user-management/pages/Users/Users';
 import ReviewList from './src/features/movie_review/pages/ReviewList';
 import Sidebar from './src/common/Sidebar';
 import ReviewAdd from './src/features/movie_review/pages/ReviewAdd';
@@ -33,9 +34,13 @@ import ViewOneMovieAdmin from './src/features/admin_movie/pages/ViewOneMovieAdmi
 import EditMovieAdmin from './src/features/admin_movie/pages/EditMovieAdmin';
 import ViewAllMovieUser from './src/features/admin_movie/pages/ViewAllMovieUser';
 import ViewOneMovieUser from './src/features/admin_movie/pages/ViewOneMovieUser';
+import CreateUser from './src/features/user-management/pages/CreateUser.jsx/CreateUser';
+import EditUser from './src/features/user-management/pages/EditUser.jsx/EditUser';
 const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white" />;
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
 const LogoutIcon = () => <Ionicons name="ios-log-out" size={23} color="white" />;
+// const User = () => <Ionicons name="person-outline"></Ionicons>;
+
 
 const KebabMenu = ({ navigation }) => {
 	const [menuVisible, setMenuVisible] = useState(false);
@@ -119,9 +124,9 @@ export default function App() {
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
 
-					if (route.name === 'Login') {
-						iconName = focused ? 'home' : 'home';
-						return <AntDesign name={iconName} size={size} color={color} />;
+					if (route.name === 'User') {
+						iconName = focused ? 'account' : 'account-outline';
+						return <MaterialCommunityIcons name={iconName} size={size} color="black" />;
 					} else if (route.name === 'Review') {
 						iconName = focused ? 'profile' : 'profile';
 						return <AntDesign name={iconName} size={size} color={color} />;
@@ -156,7 +161,11 @@ export default function App() {
 			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
 			<Tab.Screen name="Admin Movie" component={ViewAllMoviesAdmin} />
 			<Tab.Screen name="Movie" component={ViewAllMovieUser} />
+
+			<Tab.Screen name="User" component={Users} />
+
 			<Tab.Screen name="My Movie" component={AllList} />
+
 		</Tab.Navigator>
 	);
 	return (
@@ -169,6 +178,9 @@ export default function App() {
 			>
 				<Stack.Screen name="login" component={Login} />
 				<Stack.Screen name="register" component={Register} />
+				<Stack.Screen name="users" component={Users} />
+				<Stack.Screen name="admin" component={CreateUser} />
+				<Stack.Screen name="edit-user" component={EditUser} />
 				<Stack.Screen name="home" component={Tabs} />
 				<Stack.Screen name="edit" component={ReviewEdit} />
 				<Stack.Screen name="listadd" component={AddList} />
