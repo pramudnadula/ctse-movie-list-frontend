@@ -277,7 +277,10 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 				) : (
 					<></>
 				)}
-				<TouchableOpacity onPress={() => openModal2(post.vid)} style={styles.iconContainer}>
+				<TouchableOpacity onPress={() => {
+					openModal2(post.vlink)
+					console.log(post.vid)
+				}} style={styles.iconContainer}>
 					<MaterialIcons name="music-video" size={24} color="#fb5b5a" />
 					<Text style={styles.iconText}>Trailer</Text>
 				</TouchableOpacity>

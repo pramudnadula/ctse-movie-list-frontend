@@ -132,13 +132,17 @@ export default function App() {
 						return <AntDesign name={iconName} size={size} color={color} />;
 					} else if (route.name === 'Admin Movie') {
 						iconName = focused ? 'movie' : 'movie-outline';
-						return <MaterialCommunityIcons name={iconName} size={24} color="black" />;
+						return <MaterialCommunityIcons name={iconName} size={24} color={color} />;
 					} else if (route.name === 'Movie') {
 						iconName = focused ? 'movie' : 'movie-outline';
-						return <MaterialCommunityIcons name={iconName} size={24} color="black" />;
+						return <MaterialCommunityIcons name={iconName} size={24} color={color} />;
+					} else if (route.name === 'My Movie') {
+						iconName = focused ? 'file' : 'file-outline';
+						return <MaterialCommunityIcons name={iconName} size={24} color={color} />;
 					}
 				},
 				headerShown: false,
+				tabBarStyle: { backgroundColor: '#222' },
 			})}
 			tabBarOptions={{
 				activeTintColor: 'tomato',
@@ -157,7 +161,11 @@ export default function App() {
 			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
 			<Tab.Screen name="Admin Movie" component={ViewAllMoviesAdmin} />
 			<Tab.Screen name="Movie" component={ViewAllMovieUser} />
+
 			<Tab.Screen name="User" component={Users} />
+
+			<Tab.Screen name="My Movie" component={AllList} />
+
 		</Tab.Navigator>
 	);
 	return (
@@ -175,6 +183,7 @@ export default function App() {
 				<Stack.Screen name="edit-user" component={EditUser} />
 				<Stack.Screen name="home" component={Tabs} />
 				<Stack.Screen name="edit" component={ReviewEdit} />
+				<Stack.Screen name="listadd" component={AddList} />
 				<Stack.Screen name="ledit" component={EditList} />
 				<Stack.Screen name="myreview" component={UserPostsList} />
 				<Stack.Screen name="onereview" component={Review} />

@@ -20,11 +20,22 @@ export default AllList = () => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             loadData()
+            create()
             console.log('Returning to earlier page');
         });
 
         return unsubscribe;
     }, [navigation]);
+
+
+    const create = async () => {
+        const db = getFirestore()
+        const movieRef = collection(db, 'userMovie');
+        const querySnapshot = await getDocs(query(movieRef, where('uid', '==', getAuth().currentUser.uid)));
+        if (querySnapshot.empty) {
+            addDoc(movieRef, { uid: getAuth().currentUser.uid })
+        }
+    }
     const handleDeletes = (id) => {
         setModalVisible(true)
         setdelid(id)
@@ -37,6 +48,7 @@ export default AllList = () => {
         loadData()
     }
     const handleEdit = (id) => {
+        console.log(docid)
         navigation.navigate('ledit', { pid: id, did: docid })
     }
     const loadData = async () => {
