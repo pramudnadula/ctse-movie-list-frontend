@@ -27,7 +27,7 @@ const UserPostsList = () => {
 	const loadData = async () => {
 		setloading(true);
 		const reviewsRef = collection(db, 'review');
-		const querySnapshot = await getDocs(query(reviewsRef, where('uid', '==', 'xX4OtaV4j5fLIE1k2cL7l4igkeN2')));
+		const querySnapshot = await getDocs(query(reviewsRef, where('uid', '==', getAuth().currentUser.uid)));
 		const reviews = [];
 		querySnapshot.forEach((doc) => {
 			const review = doc.data();
@@ -71,23 +71,26 @@ const UserPostsList = () => {
 			</View>
 
 			<View style={styles.con2}>
-				<Text style={styles.title}>{item.mname}</Text>
-				<Text style={{ color: 'white' }}>{item.title}</Text>
-				<View style={styles.iconContainer}>
-					<TouchableOpacity onPress={() => EditButton(item.id)} style={styles.iconButton}>
-						<Ionicons name="pencil-outline" size={24} color="white" />
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={() => {
-							setdelid(item.id);
-							setSelectedPost(item);
-							setModalVisible(true);
-						}}
-						style={styles.iconButton}
-					>
-						<Ionicons name="trash-outline" size={24} color="white" />
-					</TouchableOpacity>
+				<View style={styles.tt}>
+					<Text style={styles.title}>{item.mname}</Text>
+					<Text style={styles.titlew}>{item.title}</Text>
 				</View>
+
+			</View>
+			<View style={styles.iconContainer}>
+				<TouchableOpacity onPress={() => EditButton(item.id)} style={styles.iconButton}>
+					<Ionicons name="pencil-outline" size={24} color="white" />
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => {
+						setdelid(item.id);
+						setSelectedPost(item);
+						setModalVisible(true);
+					}}
+					style={styles.iconButton}
+				>
+					<Ionicons name="trash-outline" size={24} color="white" />
+				</TouchableOpacity>
 			</View>
 		</View>
 	);
@@ -136,6 +139,9 @@ const UserPostsList = () => {
 };
 
 const styles = StyleSheet.create({
+	tt: {
+		width: '70%'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#121212',
@@ -152,7 +158,7 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 		display: 'flex',
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+
 	},
 	title: {
 		fontWeight: 'bold',
@@ -160,10 +166,16 @@ const styles = StyleSheet.create({
 		color: '#fb5b5a',
 		marginBottom: 5,
 	},
+	titlew: {
+		color: 'white'
+	},
 	iconContainer: {
-		flexDirection: 'row',
+		flexDirection: 'column',
 		justifyContent: 'flex-end',
 		marginTop: 5,
+		position: 'absolute',
+		right: 10,
+		top: 30
 	},
 	iconButton: {
 		marginLeft: 10,
@@ -208,8 +220,9 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 	im: {
-		width: 50,
-		height: 70,
+		width: 70,
+		height: 90,
+		marginRight: 60
 	},
 	con1: {},
 });

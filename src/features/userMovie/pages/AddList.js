@@ -3,6 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Image, Scr
 import StarRating from 'react-native-star-rating';
 import DateField from 'react-native-datefield';
 import { useRoute } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import { getAuth } from 'firebase/auth'
 import {
 	getFirestore,
 	collection,
@@ -17,6 +19,7 @@ import {
 	orderBy,
 	onSnapshot,
 } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 import {
 	Container,
 	ImageContainer,
@@ -37,6 +40,7 @@ import {
 } from '../styles/add';
 import { add } from 'react-native-reanimated';
 const AddList = () => {
+	const navigation = useNavigation();
 	const route = useRoute();
 	const { pid } = route.params;
 	const [date, setDate] = useState('');
@@ -60,7 +64,7 @@ const AddList = () => {
 	const checkadded = async () => {
 		const db = getFirestore();
 		let firstDoc = {};
-		const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'; //firebase.auth().currentUser.uid;
+		const userId = getAuth().currentUser.uid;
 		const movieRef = collection(db, 'userMovie');
 		const querySnapshot = await getDocs(query(movieRef, where('uid', '==', userId)));
 		if (!querySnapshot.empty) {
@@ -79,7 +83,7 @@ const AddList = () => {
 	const submit = async () => {
 		const db = getFirestore();
 		let firstDoc = {};
-		const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'; //firebase.auth().currentUser.uid;
+		const userId = getAuth().currentUser.uid;
 		const movieRef = collection(db, 'userMovie');
 		const querySnapshot = await getDocs(query(movieRef, where('uid', '==', userId)));
 		if (!querySnapshot.empty) {
@@ -92,17 +96,24 @@ const AddList = () => {
 			rating,
 			comment,
 			mid: pid,
-			mname: mov.mname,
-			img: mov.img1,
+			mname: mov.title,
+			img: mov.image1,
 		};
 
 		const newCommentRef = await addDoc(collection(db, `userMovie/${firstDoc.id}/list`), ob);
+		Toast.show({
+			type: 'success',
+			text1: ' Added to List Successfully',
+			topOffset: 100,
+			visibilityTime: 1500,
+		});
+		navigation.navigate('My Movie')
 	};
 	const loadDocumentById = async () => {
 		setloading(true);
 		try {
 			const db = getFirestore();
-			const docRef = doc(db, 'review', pid);
+			const docRef = doc(db, 'AdminMovies', pid);
 			const docSnap = await getDoc(docRef);
 
 			if (docSnap.exists()) {
@@ -142,8 +153,8 @@ const AddList = () => {
 			<View style={styles.container}>
 				<View style={styles.form}>
 					<OneSwitch></OneSwitch>
-					<Text style={styles.title}>{mov.mname}</Text>
-					<Image style={styles.showim} source={{ uri: mov.img1 }} />
+					<Text style={styles.title}>{mov.title}</Text>
+					<Image style={styles.showim} source={{ uri: mov.image1 }} />
 
 					<Text style={styles.label}>Watched the movie</Text>
 					<OneSwitch>

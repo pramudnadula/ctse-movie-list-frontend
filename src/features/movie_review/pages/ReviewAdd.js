@@ -170,7 +170,7 @@ export default function ReviewAdd() {
 			like: isEnabled1,
 			likes: 0,
 			comments: 0,
-			uid: 'xX4OtaV4j5fLIE1k2cL7l4igkeN2', //getAuth().currentUser.uid,
+			uid: getAuth().currentUser.uid,
 		};
 		const db = getFirestore();
 		try {
@@ -208,7 +208,7 @@ export default function ReviewAdd() {
 						reject(new TypeError('Network request failed'));
 					};
 					xhr.responseType = 'blob';
-					xhr.open('GET', result.uri, true);
+					xhr.open('GET', result.assets[0].uri, true);
 					xhr.send(null);
 				});
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { Ionicons } from '@expo/vector-icons';
 import {
     Modal,
@@ -19,11 +20,22 @@ export default AllList = () => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             loadData()
+            create()
             console.log('Returning to earlier page');
         });
 
         return unsubscribe;
     }, [navigation]);
+
+
+    const create = async () => {
+        const db = getFirestore()
+        const movieRef = collection(db, 'userMovie');
+        const querySnapshot = await getDocs(query(movieRef, where('uid', '==', getAuth().currentUser.uid)));
+        if (querySnapshot.empty) {
+            addDoc(movieRef, { uid: getAuth().currentUser.uid })
+        }
+    }
     const handleDeletes = (id) => {
         setModalVisible(true)
         setdelid(id)
@@ -36,12 +48,13 @@ export default AllList = () => {
         loadData()
     }
     const handleEdit = (id) => {
+        console.log(docid)
         navigation.navigate('ledit', { pid: id, did: docid })
     }
     const loadData = async () => {
         let firstDoc = {}
         const db = getFirestore()
-        const userId = 'xX4OtaV4j5fLIE1k2cL7l4igkeN2'//firebase.auth().currentUser.uid;
+        const userId = getAuth().currentUser.uid;
         const movieRef = collection(db, 'userMovie');
         const querySnapshot = await getDocs(query(movieRef, where('uid', '==', userId)));
         if (!querySnapshot.empty) {

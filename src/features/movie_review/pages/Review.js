@@ -195,9 +195,11 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     head: {
-        fontSize: 26,
+        fontSize: 20,
+        textAlign: 'center',
         color: '#fb5b5a',
         marginTop: 20,
+        fontStyle: 'italic'
     },
     label: {
         fontSize: 16,
