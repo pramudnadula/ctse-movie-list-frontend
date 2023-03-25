@@ -64,12 +64,12 @@ const ViewAllMovieUser = () => {
 	}, [searchQuery, db, genre]);
 
 	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
-			loadData();
-			console.log('Returning to earlier page');
-		});
+		loadData();
+		// const unsubscribe = navigation.addListener('focus', () => {
+		// 	console.log('Returning to earlier page');
+		// });
 
-		return unsubscribe;
+		// return unsubscribe;
 	}, [navigation]);
 
 	const handleSearch = (text) => {
