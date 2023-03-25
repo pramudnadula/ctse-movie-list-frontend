@@ -45,6 +45,12 @@ const style = StyleSheet.create({
 	registerText: {
 		color: '#fff',
 	},
+	to: {
+		color: '#fb5b5a',
+		fontSize: 60,
+		marginBottom: 120
+
+	}
 });
 
 function Login() {
@@ -107,7 +113,7 @@ function Login() {
 			});
 
 			setTimeout(function () {
-				navigation.navigate('home');
+				navigation.navigate('Movie Man');
 			}, 1500);
 		} catch (err) {
 			console.log(err.code);
@@ -142,6 +148,9 @@ function Login() {
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={style.container}>
+			<View style={style.topic}>
+				<Text style={style.to}>Movie Man</Text>
+			</View>
 			<View style={style.inputView}>
 				<TextInput style={style.inputText} placeholder="Email" value={email} onChangeText={setEmail} />
 			</View>

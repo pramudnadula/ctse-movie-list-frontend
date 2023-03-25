@@ -169,7 +169,7 @@ export default function App() {
 			>
 				<Stack.Screen name="login" component={Login} />
 				<Stack.Screen name="register" component={Register} />
-				<Stack.Screen name="home" component={Tabs} />
+				<Stack.Screen name="Movie Man" component={Tabs} />
 				<Stack.Screen name="edit" component={ReviewEdit} />
 				<Stack.Screen name="listadd" component={AddList} />
 				<Stack.Screen name="ledit" component={EditList} />
