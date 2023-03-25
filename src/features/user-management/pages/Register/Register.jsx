@@ -6,25 +6,37 @@ import { getFirestore, doc, setDoc } from '@firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { CheckBox } from '@rneui/themed';
+import { CheckBox, Icon } from '@rneui/themed';
 import { CheckBoxContainer } from '../../styles/EditUser.style';
 
-const style = StyleSheet.create({
-	scrollView: {
-		flexGrow: 1,
-		backgroundColor: '#222',
-	},
+const styles = StyleSheet.create({
 	container: {
+		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: '100%',
-		marginTop: 40,
-		marginBottom: 40,
+		backgroundColor: '#000',
 	},
+	container1: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#000',
+		gap: 10,
+	},
+	title: {
+		color: '#fb5b5a',
+		fontSize: 35,
+		textAlign: 'center',
+		fontWeight: 'bold',
+		marginTop: 20,
+		marginBottom: 20,
+	},
+
 	inputView: {
-		width: '80%',
+		width: '95%',
 		borderRadius: 25,
-		borderColor: '#fff',
+		borderWidth: 1,
+		borderColor: '#ccc',
 		height: 50,
 		marginBottom: 20,
 		justifyContent: 'center',
@@ -34,34 +46,76 @@ const style = StyleSheet.create({
 	inputText: {
 		height: 50,
 	},
+
+	registerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 10,
+		gap: 10,
+	},
 	registerBtn: {
-		width: '40%',
+		width: '50%',
 		borderRadius: 25,
 		height: 50,
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginTop: 40,
+		marginTop: 20,
 		marginBottom: 10,
-		backgroundColor: '#fff',
-	},
-	registerText: {
-		fontSize: 18,
-		fontWeight: 900,
+		backgroundColor: '#fb5b5a',
 	},
 	loginText: {
+		fontSize: 18,
+		fontWeight: 'bold',
 		color: '#fff',
+	},
+	logo: {
+		height: 200,
+		width: 200,
 	},
 	checkboxView: {
 		display: 'flex',
 	},
 	imageText: {
-		marginTop: -5
+		marginTop: -5,
 	},
-	te: {
-		color: '#fb5b5a',
-		marginBottom: 90,
-		fontSize: 40
-	}
+	checkboxContainer: {
+		backgroundColor: 'transparent',
+		borderWidth: 0,
+		margin: 0,
+		padding: 0,
+	},
+	checkboxText: {
+		fontSize: 16,
+		fontWeight: 'normal',
+		color: '#fff',
+	},
+	checkedBox: {
+		width: 20,
+		height: 20,
+		borderRadius: 10,
+		backgroundColor: '#fb5b5a',
+		borderWidth: 3,
+		borderColor: '#FFF',
+	},
+	uncheckedBox: {
+		width: 20,
+		height: 20,
+		borderRadius: 10,
+		borderWidth: 2,
+		borderColor: '#fb5b5a',
+	},
+	inputViewImage: {
+		width: '95%',
+		borderRadius: 25,
+		borderWidth: 1,
+		borderColor: '#ccc',
+		height: 40,
+		alignItems: 'center',
+		justifyContent: 'center',
+
+		backgroundColor: '#fff',
+	},
 });
 
 function Register() {
@@ -220,79 +274,101 @@ function Register() {
 	};
 
 	return (
-		<ScrollView
-			contentContainerStyle={style.scrollView}
-			automaticallyAdjustKeyboardInsets={true}
-			contentInsetAdjustmentBehavior={'automatic'}
-		>
-			<View style={style.container}>
-				<View style={style.titl}>
-
-					<Text style={style.te}>
-						Register
-					</Text>
-				</View>
-				<View style={style.inputView}>
-					<TextInput placeholder="Email" value={email} onChangeText={setEmail} style={style.inputText} />
-				</View>
-				<View style={style.inputView}>
-					<TextInput
-						placeholder="Password"
-						value={password}
-						secureTextEntry={true}
-						onChangeText={setPassword}
-						style={style.inputText}
-					/>
-				</View>
-				<View style={style.inputView}>
-					<TextInput
-						placeholder="Re-enter Password"
-						value={tempPassword}
-						secureTextEntry={true}
-						onChangeText={setTempPassword}
-						style={style.inputText}
-					/>
-				</View>
-				<View style={style.inputView}>
-					<TextInput placeholder="Name" value={name} onChangeText={setName} style={style.inputText} />
-				</View>
-				<View style={style.inputView}>
-					<TextInput
-						placeholder="Country"
-						value={country}
-						onChangeText={setCountry}
-						style={style.inputText}
-					/>
-				</View>
-				<CheckBoxContainer>
-					<CheckBox
-						checked={gender === 'male'}
-						onPress={() => setGender('male')}
-						checkedIcon="dot-circle-o"
-						uncheckedIcon="circle-o"
-						title="Male"
-					/>
-					<CheckBox
-						checked={gender === 'female'}
-						onPress={() => setGender('female')}
-						checkedIcon="dot-circle-o"
-						uncheckedIcon="circle-o"
-						title="Female"
-					/>
-				</CheckBoxContainer>
-				<View style={style.inputView}>
-					<TouchableOpacity onPress={handleImagePicker}>
-						<Text style={style.imageText}>{imageState}</Text>
-					</TouchableOpacity>
-				</View>
-				<Text style={style.loginText} onPress={handleNavigate}>
-					Click Here to Login
-				</Text>
-				<TouchableOpacity style={style.registerBtn} onPress={() => handleRegister()}>
-					<Text style={style.registerText}>Register</Text>
-				</TouchableOpacity>
+		<View style={styles.container}>
+			<View>
+				<Text style={styles.title}>Register</Text>
 			</View>
-		</ScrollView>
+			<ScrollView
+				contentContainerStyle={styles.scrollView}
+				automaticallyAdjustKeyboardInsets={true}
+				contentInsetAdjustmentBehavior={'automatic'}
+			>
+				<View style={styles.container1}>
+					<View style={styles.inputView}>
+						<TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.inputText} />
+					</View>
+					<View style={styles.inputView}>
+						<TextInput
+							placeholder="Password"
+							value={password}
+							secureTextEntry={true}
+							onChangeText={setPassword}
+							style={styles.inputText}
+						/>
+					</View>
+					<View style={styles.inputView}>
+						<TextInput
+							placeholder="Re-enter Password"
+							value={tempPassword}
+							secureTextEntry={true}
+							onChangeText={setTempPassword}
+							style={styles.inputText}
+						/>
+					</View>
+					<View style={styles.inputView}>
+						<TextInput placeholder="Name" value={name} onChangeText={setName} style={styles.inputText} />
+					</View>
+					<View style={styles.inputView}>
+						<TextInput
+							placeholder="Country"
+							value={country}
+							onChangeText={setCountry}
+							style={styles.inputText}
+						/>
+					</View>
+					<CheckBoxContainer>
+						<CheckBox
+							checked={gender === 'male'}
+							onPress={() => setGender('male')}
+							checkedIcon={<View style={styles.checkedBox} />}
+							uncheckedIcon={<View style={styles.uncheckedBox} />}
+							title="Male"
+							containerStyle={styles.checkboxContainer}
+							textStyle={styles.checkboxText}
+							checkedColor="#007AFF"
+						/>
+						<CheckBox
+							checked={gender === 'female'}
+							onPress={() => setGender('female')}
+							checkedIcon={<View style={styles.checkedBox} />}
+							uncheckedIcon={<View style={styles.uncheckedBox} />}
+							title="Female"
+							containerStyle={styles.checkboxContainer}
+							textStyle={styles.checkboxText}
+							checkedColor="#007AFF"
+						/>
+					</CheckBoxContainer>
+					<View style={styles.inputViewImage}>
+						<TouchableOpacity onPress={handleImagePicker}>
+							<Text style={styles.imageText}>{imageState}</Text>
+						</TouchableOpacity>
+					</View>
+					<TouchableOpacity onPress={() => handleRegister()} style={styles.registerBtn}>
+						<Text style={styles.loginText}>Register</Text>
+					</TouchableOpacity>
+					<View style={styles.registerContainer}>
+						<Text
+							style={{
+								fontSize: 14,
+								color: '#fff',
+							}}
+						>
+							Click here to{' '}
+						</Text>
+						<TouchableOpacity onPress={handleNavigate}>
+							<Text
+								style={{
+									fontSize: 14,
+									color: '#fb5b5a',
+								}}
+							>
+								Log In
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</ScrollView>
+		</View>
 	);
 }
 

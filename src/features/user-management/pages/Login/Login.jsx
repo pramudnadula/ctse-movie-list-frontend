@@ -6,19 +6,23 @@ import { useNavigation } from '@react-navigation/core';
 import { KeyboardAvoidingView } from 'react-native';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const style = StyleSheet.create({
+import { Image } from 'react-native';
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#222',
 		justifyContent: 'center',
 		alignItems: 'center',
-		height: '100%',
-		width: '100%',
+		backgroundColor: '#000',
 	},
+	logoContainer: {
+		marginBottom: 50,
+	},
+
 	inputView: {
 		width: '80%',
 		borderRadius: 25,
-		borderColor: '#fff',
+		borderWidth: 1,
+		borderColor: '#ccc',
 		height: 50,
 		marginBottom: 20,
 		justifyContent: 'center',
@@ -29,45 +33,47 @@ const style = StyleSheet.create({
 		height: 50,
 	},
 	loginBtn: {
-		width: '40%',
+		width: '50%',
 		borderRadius: 25,
 		height: 50,
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginTop: 40,
+		marginTop: 20,
 		marginBottom: 10,
-		backgroundColor: '#fff',
+		backgroundColor: '#fb5b5a',
 	},
 	loginText: {
 		fontSize: 18,
-		fontWeight: 900,
-	},
-	registerText: {
+		fontWeight: 'bold',
 		color: '#fff',
 	},
-	to: {
-		color: '#fb5b5a',
-		fontSize: 60,
-		marginBottom: 120
-
-	}
+	registerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 10,
+		gap: 10,
+		position: 'absolute',
+		bottom: 20,
+	},
+	logo: {
+		height: 200,
+		width: 200,
+	},
 });
-
 function Login() {
 	const storeData = async (value) => {
 		try {
-			await AsyncStorage.setItem('isAdmin', String(value))
+			await AsyncStorage.setItem('isAdmin', String(value));
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 		}
-	}
+	};
 	const auth = getAuth();
 	const navigation = useNavigation();
 
-
 	const [email, setEmail] = useState('kavi@gmail.com');
 	const [password, setPassword] = useState('123456');
-
 
 	const handleLogin = async () => {
 		try {
@@ -91,21 +97,18 @@ function Login() {
 			}
 
 			await signInWithEmailAndPassword(auth, email, password);
-			const db = getFirestore()
+			const db = getFirestore();
 			const docRef = doc(db, 'users', getAuth().currentUser.uid);
-			console.log(getAuth().currentUser.uid)
+			console.log(getAuth().currentUser.uid);
 			getDoc(docRef).then((docs) => {
-				storeData(docs.data().isAdmin)
-			})
-
+				storeData(docs.data().isAdmin);
+			});
 
 			const movieRef = collection(db, 'userMovie');
 			const querySnapshot = await getDocs(query(movieRef, where('uid', '==', getAuth().currentUser.uid)));
 			if (querySnapshot.empty) {
-				addDoc(movieRef, { uid: getAuth().currentUser.uid })
+				addDoc(movieRef, { uid: getAuth().currentUser.uid });
 			}
-
-
 
 			Toast.show({
 				type: 'success', // success, error, info
@@ -149,28 +152,45 @@ function Login() {
 	};
 
 	return (
-		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={style.container}>
-			<View style={style.topic}>
-				<Text style={style.to}>Movie Man</Text>
+		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+			<View style={styles.logoContainer}>
+				<Image source={require('../../../../common/logo.png')} style={styles.logo} resizeMode="contain" />
 			</View>
-			<View style={style.inputView}>
-				<TextInput style={style.inputText} placeholder="Email" value={email} onChangeText={setEmail} />
+			<View style={styles.inputView}>
+				<TextInput style={styles.inputText} placeholder="Email" value={email} onChangeText={setEmail} />
 			</View>
-			<View style={style.inputView}>
+			<View style={styles.inputView}>
 				<TextInput
-					style={style.inputText}
+					style={styles.inputText}
 					placeholder="Password"
 					secureTextEntry={true}
 					value={password}
 					onChangeText={setPassword}
 				/>
 			</View>
-			<Text style={style.registerText} onPress={handleNavigate}>
-				Click Here to Register
-			</Text>
-			<TouchableOpacity onPress={handleLogin} style={style.loginBtn}>
-				<Text style={style.loginText}>LOGIN</Text>
+			<TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
+				<Text style={styles.loginText}>LOGIN</Text>
 			</TouchableOpacity>
+			<View style={styles.registerContainer}>
+				<Text
+					style={{
+						fontSize: 14,
+						color: '#fff',
+					}}
+				>
+					Don't have an account ?
+				</Text>
+				<TouchableOpacity onPress={handleNavigate}>
+					<Text
+						style={{
+							fontSize: 14,
+							color: '#fb5b5a',
+						}}
+					>
+						Register
+					</Text>
+				</TouchableOpacity>
+			</View>
 		</KeyboardAvoidingView>
 	);
 }
