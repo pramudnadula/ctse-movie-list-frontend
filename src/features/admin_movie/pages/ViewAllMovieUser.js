@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image, FlatList, TextInput } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, TextInput, ActivityIndicator } from 'react-native';
 import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -33,8 +33,10 @@ const ViewAllMovieUser = () => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [genre, setGenre] = useState('');
+	const [loading, setLoading] = useState(true);
 
 	const loadData = async () => {
+		setLoading(true);
 		let adminMovieRef = collection(db, 'AdminMovies');
 		console.log(searchQuery);
 
@@ -57,6 +59,7 @@ const ViewAllMovieUser = () => {
 			movies.push(movie);
 		});
 		setMovies(movies);
+		setLoading(false);
 	};
 
 	useEffect(() => {
@@ -76,32 +79,48 @@ const ViewAllMovieUser = () => {
 		setSearchQuery(text);
 	};
 	return (
-		<View style={styles.container}>
-			<TextInput
-				style={styles.searchBar}
-				placeholder="Search by title"
-				placeholderTextColor="#fff"
-				onChangeText={handleSearch}
-				value={searchQuery}
-			/>
-			<Picker
-				selectedValue={genre}
-				style={styles.searchBar}
-				placeholder="Genre"
-				placeholderTextColor="#B3B3B3"
-				onValueChange={(itemValue, itemIndex) => setGenre(itemValue)}
-			>
-				<Picker.Item label="Filter by Genre" value="" />
-				{genres.map((item, index) => {
-					return <Picker.Item label={item} value={item} key={index} />;
-				})}
-			</Picker>
-			<FlatList
-				data={movies}
-				keyExtractor={(movie) => movie.id.toString()}
-				renderItem={({ item }) => <OneMovieUser movie={item} />}
-			/>
-		</View>
+		<>
+			{loading ? (
+				<View style={styles.containerLoading}>
+					<ActivityIndicator size="large" color="#fb5b5a" />
+					<Text
+						style={{
+							color: '#fb5b5a',
+							textAlign: 'center',
+						}}
+					>
+						Loading...
+					</Text>
+				</View>
+			) : (
+				<View style={styles.container}>
+					<TextInput
+						style={styles.searchBar}
+						placeholder="Search by title"
+						placeholderTextColor="#fff"
+						onChangeText={handleSearch}
+						value={searchQuery}
+					/>
+					<Picker
+						selectedValue={genre}
+						style={styles.searchBar}
+						placeholder="Genre"
+						placeholderTextColor="#B3B3B3"
+						onValueChange={(itemValue, itemIndex) => setGenre(itemValue)}
+					>
+						<Picker.Item label="Filter by Genre" value="" />
+						{genres.map((item, index) => {
+							return <Picker.Item label={item} value={item} key={index} />;
+						})}
+					</Picker>
+					<FlatList
+						data={movies}
+						keyExtractor={(movie) => movie.id.toString()}
+						renderItem={({ item }) => <OneMovieUser movie={item} />}
+					/>
+				</View>
+			)}
+		</>
 	);
 };
 
