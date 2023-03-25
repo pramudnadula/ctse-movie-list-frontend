@@ -8,6 +8,7 @@ import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { CheckBox, Icon } from '@rneui/themed';
 import { CheckBoxContainer } from '../../styles/EditUser.style';
+import { Image } from 'react-native';
 
 const styles = StyleSheet.create({
 	container: {
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		marginTop: 10,
 		gap: 10,
+		marginBottom: 5,
 	},
 	registerBtn: {
 		width: '50%',
@@ -70,8 +72,8 @@ const styles = StyleSheet.create({
 		color: '#fff',
 	},
 	logo: {
-		height: 200,
-		width: 200,
+		height: 100,
+		width: 100,
 	},
 	checkboxView: {
 		display: 'flex',
@@ -113,8 +115,11 @@ const styles = StyleSheet.create({
 		height: 40,
 		alignItems: 'center',
 		justifyContent: 'center',
-
 		backgroundColor: '#fff',
+	},
+	logoContainer: {
+		marginTop: 20,
+		marginBottom: 20,
 	},
 });
 
@@ -275,8 +280,8 @@ function Register() {
 
 	return (
 		<View style={styles.container}>
-			<View>
-				<Text style={styles.title}>Register</Text>
+			<View style={styles.logoContainer}>
+				<Image source={require('../../../../common/logo.png')} style={styles.logo} resizeMode="contain" />
 			</View>
 			<ScrollView
 				contentContainerStyle={styles.scrollView}
