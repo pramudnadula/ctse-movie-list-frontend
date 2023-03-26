@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const UserInfo = styled.View`
-  display: flex;
+	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
 `;
@@ -33,15 +33,14 @@ export const UserName = styled.Text`
 `;
 
 export const Row = styled.View`
-  display: flex;
-  width: 100%;
-  margin-top: 10px;
-  justify-content: flex-start;
+	display: flex;
+	width: 100%;
+	margin-top: 10px;
+	justify-content: flex-start;
 `;
 
 export const Details = styled.Text`
-  font-weight: 600;
-  font-size: 14px;
-  padding: 10px;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 10px;
 `;
-
