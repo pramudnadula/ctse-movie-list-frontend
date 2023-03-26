@@ -140,10 +140,10 @@ const ViewOneMovieUser = () => {
 		<>
 			{loading ? (
 				<View style={styles.containerLoading}>
-					<ActivityIndicator size="large" color="#0000ff" />
+					<ActivityIndicator size="large" color="#fb5b5a" />
 					<Text
 						style={{
-							color: '#fff',
+							color: '#fb5b5a',
 							textAlign: 'center',
 						}}
 					>
@@ -361,6 +361,13 @@ const styles = StyleSheet.create({
 		height: 300,
 		marginRight: 10,
 		borderRadius: 10,
+	},
+	containerLoading: {
+		flex: 1,
+		backgroundColor: '#000',
+		justifyContent: 'center',
+		height: '100%',
+		width: '100%',
 	},
 });
 
