@@ -215,7 +215,7 @@ export default function ReviewEdit() {
 			visibilityTime: 1500,
 		});
 
-		navigation.navigate('myreview');
+		navigation.navigate('My Review');
 	};
 	const handleImagePicker = async (index) => {
 		try {

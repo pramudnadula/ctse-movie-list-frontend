@@ -180,12 +180,12 @@ export default function App() {
 				<Stack.Screen name="admin" component={CreateUser} />
 				<Stack.Screen name="edit-user" component={EditUser} />
 				<Stack.Screen name="Movie Man" component={Tabs} />
-				<Stack.Screen name="edit" component={ReviewEdit} />
+				<Stack.Screen name="Edit Review" component={ReviewEdit} />
 				<Stack.Screen name="listadd" component={AddList} />
 				<Stack.Screen name="ledit" component={EditList} />
-				<Stack.Screen name="myreview" component={UserPostsList} />
-				<Stack.Screen name="onereview" component={Review} />
-				<Stack.Screen name="reviewadd" component={ReviewAdd} />
+				<Stack.Screen name="My Review" component={UserPostsList} />
+				<Stack.Screen name="View Review" component={Review} />
+				<Stack.Screen name="Add Review" component={ReviewAdd} />
 				<Stack.Screen name="viewOneMovie" component={ViewOneMovieAdmin} />
 				<Stack.Screen name="View Movie" component={ViewOneMovieUser} />
 				{/*  // user view */}
