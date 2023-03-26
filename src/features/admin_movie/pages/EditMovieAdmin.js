@@ -183,7 +183,7 @@ const EditMovieAdmin = () => {
 					visibilityTime: 1500, // if don't set this, it calls the default
 					text2: 'Movie Updated Successfully ✅',
 				});
-				navigation.navigate('Admin Movie');
+				navigation.navigate('Movie');
 			})
 			.catch((error) => {
 				console.error('Error updating document: ', error);

@@ -136,7 +136,7 @@ const AddMovieAdmin = () => {
 					visibilityTime: 1500, // if don't set this, it calls the default
 					text2: 'New Movie Added Successfully ✅',
 				});
-				navigation.navigate('Admin Movie');
+				navigation.navigate('Movie');
 			})
 			.catch((error) => {
 				console.error('Error adding document: ', error);
