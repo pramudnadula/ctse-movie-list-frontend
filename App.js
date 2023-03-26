@@ -1,28 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import Drawer from 'react-native-drawer';
-import { ToastProvider } from 'react-native-toast-message';
-import Home from './src/common/Home';
-import AddMovie from './src/features/userMovie/pages/AddMovie';
-import AllMovies from './src/features/userMovie/pages/AllMovies';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Login from './src/features/user-management/pages/Login/Login';
 import Register from './src/features/user-management/pages/Register/Register';
 import Users from './src/features/user-management/pages/Users/Users';
 import ReviewList from './src/features/movie_review/pages/ReviewList';
-import Sidebar from './src/common/Sidebar';
 import ReviewAdd from './src/features/movie_review/pages/ReviewAdd';
 import Review from './src/features/movie_review/pages/Review';
 import * as firebase from 'firebase/app';
 import 'firebase/storage';
-import * as Expo from 'expo';
 import UserPostsList from './src/features/movie_review/pages/UserPostsList';
 import ReviewEdit from './src/features/movie_review/pages/ReviewEdit';
-import { useNavigation } from '@react-navigation/native';
 import IoniconsHeaderButton from './src/common/IoniconsHeaderButton';
 import AddList from './src/features/userMovie/pages/AddList';
 import AllList from './src/features/userMovie/pages/AllList';
@@ -154,13 +146,10 @@ export default function App() {
 				},
 			}}
 		>
-
 			<Tab.Screen name="Movie" component={Movies} />
 			<Tab.Screen name="My Movie" component={AllList} />
 			<Tab.Screen name="Review" onPress={() => console.log('Profile button clicked')} component={ReviewList} />
 			<Tab.Screen name="User" component={Users} />
-
-
 		</Tab.Navigator>
 	);
 	return (
