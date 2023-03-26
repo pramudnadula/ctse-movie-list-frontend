@@ -14,13 +14,13 @@ export default AllList = () => {
 
 	const [modalVisible, setModalVisible] = useState(false);
 	useEffect(() => {
-		// const unsubscribe = navigation.addListener('focus', () => {
-		loadData();
-		create();
-		// console.log('Returning to earlier page');
-		// });
+		const unsubscribe = navigation.addListener('focus', () => {
+			loadData();
+			create();
+			console.log('Returning to earlier page');
+		});
 
-		// return unsubscribe;
+		return unsubscribe;
 	}, [navigation]);
 
 	const create = async () => {
