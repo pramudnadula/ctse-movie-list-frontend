@@ -17,14 +17,13 @@ const style = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#000',
+		backgroundColor: '#222',
 	},
 	container1: {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#000',
+		backgroundColor: '#222',
 		gap: 10,
 	},
 	title: {
@@ -124,6 +123,7 @@ const style = StyleSheet.create({
 	logoContainer: {
 		marginTop: 20,
 		marginBottom: 20,
+		alignItems: 'center',
 	},
 });
 

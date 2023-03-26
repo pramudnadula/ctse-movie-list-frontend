@@ -95,6 +95,12 @@ function Login() {
 				});
 				return;
 			}
+			Toast.show({
+				type: 'info', // success, error, info
+				text1: 'Logging in...',
+				topOffset: 100,
+				visibilityTime: 1500, // if don't set this, it calls the default
+			});
 
 			await signInWithEmailAndPassword(auth, email, password);
 			const db = getFirestore();
