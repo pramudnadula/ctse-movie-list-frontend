@@ -41,7 +41,7 @@ const UserPostsList = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const EditButton = (id) => {
-		navigation.navigate('edit', { pid: id });
+		navigation.navigate('Edit Review', { pid: id });
 	};
 
 	const handleDelete = () => {

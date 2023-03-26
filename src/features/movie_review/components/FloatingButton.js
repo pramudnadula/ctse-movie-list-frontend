@@ -12,10 +12,10 @@ const FloatingButton = ({ onPress }) => {
 
 	const gotopage = (index) => {
 		if (index === 1) {
-			navigation.navigate('reviewadd');
+			navigation.navigate('Add Review');
 			handlePress();
 		} else if (index === 2) {
-			navigation.navigate('myreview');
+			navigation.navigate('My Review');
 			handlePress();
 		} else {
 			navigation.navigate('Review');

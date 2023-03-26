@@ -52,7 +52,7 @@ const Post = ({ post, onPressLike, onPressComment, onPressShare, openModal, open
 		setIsCommentModalVisible(true);
 	};
 	const gotoviewpage = () => {
-		navigation.navigate('onereview', { pid: post.id });
+		navigation.navigate('View Review', { pid: post.id });
 	};
 
 	const loadComments = (id) => {
