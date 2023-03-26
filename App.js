@@ -32,39 +32,23 @@ const SettingsIcon = () => <Ionicons name="ios-settings" size={23} color="white"
 const HelpIcon = () => <Ionicons name="ios-help-circle" size={23} color="white" />;
 const LogoutIcon = () => <Ionicons name="ios-log-out" size={23} color="white" />;
 // const User = () => <Ionicons name="person-outline"></Ionicons>;
-
+import { useNavigation } from '@react-navigation/native';
 const KebabMenu = ({ navigation }) => {
 	const [menuVisible, setMenuVisible] = useState(false);
-
+	const navigationS = useNavigation();
 	const toggleMenu = () => {
 		setMenuVisible(!menuVisible);
 	};
 
-	const onHideShowPress = () => {
-		toggleMenu();
-		return <Login />;
-	};
-
-	const onSettingsPress = () => {
-		toggleMenu();
-		// Navigate to the settings screen
-	};
-
-	const onHelpPress = () => {
-		toggleMenu();
-		// Show help information
-	};
-
 	return (
 		<HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-			<Item title="Menu" iconName="ellipsis-vertical" onPress={toggleMenu} />
-			{menuVisible && (
-				<>
-					<Item title="Hide/Show" iconName="ios-eye-off" onPress={onHideShowPress} />
-					<Item title="Settings" iconName="ios-settings" onPress={onSettingsPress} />
-					<Item title="Help" iconName="ios-help-circle" onPress={onHelpPress} />
-				</>
-			)}
+			<Item
+				title="Logout"
+				iconName="ios-log-out"
+				onPress={() => {
+					navigationS.navigate('login');
+				}}
+			/>
 		</HeaderButtons>
 	);
 };
